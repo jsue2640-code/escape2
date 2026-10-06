@@ -3,75 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>성읍민속마을 방탈출 - 제주 탐험</title>
+    <title>성읍 1890: 사라진 수호자의 암호</title>
     <style>
+        /* ====== 전체 배경 & 기본 글꼴 ====== */
         body {
-            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
-            background-color: #f4f1ea;
+            font-family: 'Malgun Gothic', '맑은 고딕', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at top, #111827 0, #020617 45%, #000000 100%);
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
         }
+
+        /* ====== 중앙 카드(탐정 기록 파일 느낌) ====== */
         .container {
-            background-color: white;
-            max-width: 500px;
+            background: #0b1220; /* 아주 진한 남색 */
+            max-width: 540px;
             width: 100%;
-            padding: 30px 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            text-align: center;
+            padding: 26px 20px 30px;
+            border-radius: 18px;
+            box-shadow:
+                0 0 0 1px rgba(148, 163, 184, 0.15),
+                0 18px 40px rgba(0, 0, 0, 0.7);
+            color: #e5e7eb;
+            position: relative;
+            overflow: hidden;
         }
-        .hidden { display: none !important; }
 
-        h1 { color: #333; font-size: 24px; margin-bottom: 10px; }
-        h2 { color: #d35400; font-size: 20px; margin-top: 0; }
+        /* 카드 위에 살짝 비치는 그리드 & 노이즈 느낌 */
+        .container::before {
+            content: "";
+            position: absolute;
+            inset: -40px;
+            background:
+                linear-gradient(120deg, rgba(148, 163, 184, 0.10) 1px, transparent 1px),
+                linear-gradient(210deg, rgba(15, 23, 42, 0.85) 0, rgba(15, 23, 42, 0.95) 50%, #020617 100%);
+            background-size: 22px 22px, auto;
+            mix-blend-mode: soft-light;
+            opacity: 0.28;
+            pointer-events: none;
+        }
 
+        .container-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ====== 공통 숨김 ====== */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ====== 타이틀 & 헤더 ====== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .title-block h1 {
+            font-size: 20px;
+            margin: 0;
+            color: #e5e7eb;
+            letter-spacing: 0.05em;
+        }
+
+        .title-block .subtitle {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-game {
+            padding: 5px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(248, 250, 252, 0.15);
+            font-size: 11px;
+            color: #f9fafb;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(15, 23, 42, 0.65);
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 6px #22c55e;
+        }
+
+        .divider {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+            margin: 10px 0 14px;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 0 0 6px;
+            color: #f9fafb;
+        }
+
+        .tagline {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        /* ====== 스토리/설명 카드 ====== */
         .story {
-            font-style: italic;
-            color: #555;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
+            background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.18), rgba(17, 24, 39, 0.95));
+            border-radius: 12px;
+            padding: 14px 14px 12px;
+            font-size: 13px;
             line-height: 1.6;
-            margin-bottom: 25px;
+            color: #e5e7eb;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            margin-bottom: 18px;
         }
+
+        .story strong {
+            color: #facc15;
+        }
+
+        .story em {
+            color: #93c5fd;
+        }
+
         .mission-desc {
             text-align: left;
-            line-height: 1.6;
-            margin-bottom: 20px;
+            line-height: 1.7;
+            font-size: 14px;
+            margin-bottom: 14px;
+            color: #e5e7eb;
         }
 
+        .mission-meta {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-bottom: 8px;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* ====== 단계/스테이지 라벨 ====== */
+        .stage-label {
+            font-size: 11px;
+            color: #facc15;
+            font-weight: 600;
+            margin-bottom: 4px;
+            text-align: left;
+            letter-spacing: 0.1em;
+        }
+
+        .timer-info {
+            font-size: 12px;
+            color: #f97316;
+            margin-bottom: 6px;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* ====== 인풋/버튼 ====== */
         input[type="text"] {
-            width: 85%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 2px solid #ddd;
+            width: 100%;
+            padding: 10px 11px;
+            margin-bottom: 10px;
             border-radius: 8px;
-            font-size: 16px;
-            text-align: center;
+            border: 1px solid rgba(148, 163, 184, 0.65);
+            font-size: 14px;
+            background: rgba(15, 23, 42, 0.92);
+            color: #e5e7eb;
+            box-sizing: border-box;
         }
+
+        input[type="text"]::placeholder {
+            color: #6b7280;
+        }
+
+        input[type="file"] {
+            margin: 10px 0 6px;
+            font-size: 12px;
+            color: #e5e7eb;
+        }
+
         button {
-            background-color: #4CAF50;
-            color: white;
+            background: linear-gradient(135deg, #f97316, #facc15);
+            color: #111827;
             border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
+            padding: 11px 20px;
+            border-radius: 99px;
+            font-size: 14px;
+            font-weight: 700;
             cursor: pointer;
-            width: 90%;
-            transition: background-color 0.3s;
+            width: 100%;
+            transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, filter 0.08s;
+            box-shadow: 0 10px 20px rgba(248, 250, 252, 0.18);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
         }
-        button:hover { background-color: #45a049; }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 26px rgba(248, 250, 252, 0.3);
+            filter: brightness(1.03);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.9);
+        }
 
         .hint {
-            font-size: 13px;
-            color: #777;
-            margin-top: 5px;
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 4px;
         }
+
         .name-label {
-            font-weight: bold;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #e5e7eb;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .small {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        .photo-preview {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 8px;
+            display: none;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: rgba(31, 41, 55, 0.9);
+            font-size: 11px;
+            color: #e5e7eb;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            margin-bottom: 6px;
+        }
+
+        .badge span {
+            font-size: 13px;
+        }
+
+        .code-box {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 12px;
+            background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.4), rgba(15, 23, 42, 0.96));
+            color: #e5e7eb;
+            padding: 10px 12px;
+            border-radius: 10px;
+            text-align: left;
+            margin-top: 8px;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+        }
+
+        .highlight {
+            color: #facc15;
+        }
+
+        .screen-block {
+            margin-top: 4px;
+        }
+
+        h3 {
+            font-size: 15px;
+            margin: 6px 0 8px;
+            color: #e5e7eb;
+        }
+
+        /* 작은 상단 라벨 느낌 */
+        .upper-label {
+            font-size: 11px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
             margin-bottom: 8px;
         }
     </style>
@@ -79,196 +301,297 @@
 <body>
 
 <div class="container">
+  <div class="container-inner">
+
+    <!-- 공통 헤더 (모든 화면에서 재사용 느낌) -->
+    <div class="header">
+        <div class="title-block">
+            <h1>성읍 1890: 사라진 수호자의 암호</h1>
+            <div class="subtitle">Detective Escape Mission · Seongeup Folk Village</div>
+        </div>
+        <div class="badge-game">
+            <span class="badge-dot"></span> ACTIVE CASE
+        </div>
+    </div>
+    <div class="divider"></div>
 
     <!-- 0. 이름 입력 화면 -->
-    <div id="screen-name">
-        <h1>🕵️‍♀️ 성읍민속마을 방탈출</h1>
-        <h2>[제주 역사·문화 탐험]</h2>
+    <div id="screen-name" class="screen-block">
+        <div class="upper-label">CASE FILE · BRIEFING</div>
+        <h2>탐정님, 신원 확인이 필요합니다</h2>
+        <p class="tagline">“먼저 마을을 읽어라.” — 1890년, 이름 없는 수호자</p>
+
         <div class="story">
-            "성읍민속마을로 시간 여행을 온 당신!<br><br>
-            제주에 대한 9개의 비밀 미션을 모두 해결하면<br>
-            마을을 무사히 탈출할 수 있습니다.<br><br>
-            먼저, 아래에 <strong>이름이나 조 이름</strong>을 적어 주세요."
+            <strong>1890년, 성읍마을을 지키던 한 수호자</strong>가<br>
+            마을의 중요한 비밀을 기록했습니다.<br><br>
+            그는 그 기록이 악용되는 것을 막기 위해,<br>
+            내용을 여러 개의 <strong>암호</strong>로 나누어<br>
+            성읍 곳곳에 숨겼습니다.<br><br>
+            마지막 문장에는 이렇게 쓰여 있었습니다.<br><br>
+            <em>“나의 비밀을 찾으려면, 먼저 마을을 읽어라.”</em><br><br>
+            100년이 넘는 시간이 흐른 지금,<br>
+            그 암호가 다시 발견되었습니다.<br><br>
+            <strong>제한 시간: 60분.</strong><br>
+            이 기록을 해독할 새 탐정의 이름을<br>
+            사건 파일에 남겨 주세요.
         </div>
-        <div class="name-label">이름 또는 조 이름을 적어 주세요</div>
-        <input type="text" id="player-name" placeholder="예: 3조 홍길동">
-        <button onclick="saveNameAndStart()">시작하기</button>
+
+        <div class="name-label">탐정 이름</div>
+        <input type="text" id="player-name" placeholder="예: 홍길동">
+        <div class="small">※ 실제 이름을 입력해 주세요. 마지막 탈출 기록에 그대로 표시됩니다.</div>
+        <br>
+        <button onclick="saveNameAndStart()">사건 파일 열람 시작</button>
     </div>
 
     <!-- 1. 시작 안내 화면 -->
-    <div id="screen-start" class="hidden">
-        <h1>성읍민속마을 방탈출</h1>
-        <h2>미션을 모두 해결하고 탈출하라!</h2>
+    <div id="screen-start" class="hidden screen-block">
+        <div class="upper-label">BRIEFING ROOM</div>
+        <h2>사건 브리핑: 성읍 1890</h2>
+        <div class="timer-info">⏱ 제한 시간 60분 · 현장 전체가 당신의 수사실입니다.</div>
         <div class="story">
-            "이제부터 성읍민속마을 곳곳을 돌아다니며<br>
-            안내판과 주변 풍경을 잘 살펴보세요.<br><br>
-            문제의 정답은 모두 이 마을 어딘가에 숨어 있습니다.<br><br>
-            모든 미션을 해결하면<br>
-            <strong>마지막에 당신의 이름과 함께 탈출 성공 화면</strong>이 나타납니다.<br>
-            그 화면을 캡처해서 선생님께 제출하세요."
+            이 미션은 <strong>9개의 암호</strong>와<br>
+            <strong>1개의 사진 기록</strong>으로 구성된<br>
+            <strong>현장 탐정 방탈출 게임</strong>입니다.<br><br>
+            각 미션은<br>
+            - <strong>비밀번호</strong><br>
+            - <strong>미스터리 메시지</strong><br>
+            - <strong>숨은 글자</strong><br>
+            - <strong>최종 금고</strong><br>
+            를 열기 위한 <span class="highlight">단서(Clue)</span>입니다.<br><br>
+            성읍민속마을의 안내판과 건물, 나무, 길을<br>
+            <strong>“읽으면서”</strong> 수호자가 남긴 암호를 해독해 보세요.<br><br>
+            마지막에 나타나는<br>
+            <strong>탈출 성공 기록</strong>과 <strong>당신의 이름</strong>을<br>
+            캡처해 선생님께 제출하면 수사가 완료됩니다.
         </div>
-        <button onclick="goToMission(1)">첫 번째 미션 시작하기</button>
+        <button onclick="goToMission(1)">첫 번째 암호로 이동</button>
     </div>
 
-    <!-- 1번 문제 -->
-    <div id="screen-1" class="hidden">
-        <h2>📍 미션 1</h2>
+    <!-- 1번 미션 -->
+    <div id="screen-1" class="hidden screen-block">
+        <div class="stage-label">CASE 1 · SECRET ILLUSTRATION CODE</div>
+        <h2>미션 1. 사라진 기록의 제목</h2>
+        <div class="mission-meta">위치: 활쏘기 체험장 근처 · 난이도 ★★☆☆☆</div>
         <div class="mission-desc">
-            <p>
-                제주목사 이형상이 제주도를 순력하며<br>
-                화공 김남길에게 제주도의 풍속과 생활 모습을 담은<br>
-                그림을 그리게 하였습니다.<br><br>
-                이 그림의 이름은 무엇일까요?
-            </p>
-            <p style="font-size: 13px; color:#555;">
-                *순력: 조선시대 지방관이 자신이 다스리는 고을을 돌며<br>
-                행정과 군사 등 여러 사항을 점검하던 제도
-            </p>
-            <p class="hint">힌트) 활쏘는 체험장 앞 안내판을 잘 살펴보세요.</p>
+            제주목사 <strong>이형상</strong>은 제주를 순력하며<br>
+            화공 <strong>김남길</strong>에게 제주 사람들의 삶과 풍속을<br>
+            그림으로 남기게 했습니다.<br><br>
+            수호자는 이 그림의 <strong>제목</strong>을<br>
+            첫 번째 <span class="highlight">비밀번호(Lock Code)</span>로 삼았습니다.<br><br>
+            이 그림의 이름은 무엇일까요?
+            <br><br>
+            <span class="small">
+                * 순력: 조선시대 지방관이 자신이 다스리는 고을을 돌아보며<br>
+                행정·군사 상황을 점검하던 제도
+            </span>
         </div>
-        <input type="text" id="answer-1" placeholder="정답을 입력하세요">
-        <button onclick="checkAnswer(1, ['탐라순력도'])">정답 확인</button>
+        <p class="hint">CLUE) 활쏘는 체험장 앞 안내판을 관찰해 제목을 찾으세요.</p>
+        <input type="text" id="answer-1" placeholder="그림의 제목을 한글로 적으세요">
+        <button onclick="checkAnswer(1, ['탐라순력도'])">LOCK 해제</button>
     </div>
 
-    <!-- 2번 문제 -->
-    <div id="screen-2" class="hidden">
-        <h2>📍 미션 2</h2>
+    <!-- 2번 미션 -->
+    <div id="screen-2" class="hidden screen-block">
+        <div class="stage-label">CASE 2 · ADMIN PASSWORD</div>
+        <h2>미션 2. 사라진 고을의 이름</h2>
+        <div class="mission-meta">위치: 성읍마을 안내도 주변 · 난이도 ★★☆☆☆</div>
         <div class="mission-desc">
-            <p>
-                조선시대 제주는 3개의 고을로 나뉘어 있었습니다.<br>
-                성읍마을이 속했던 고을은 어디일까요?
-            </p>
-            <p class="hint">힌트) 정답은 ‘OO현’ 형태입니다.</p>
+            조선시대의 제주는 <strong>3개의 고을</strong>로 나뉘어 있었습니다.<br>
+            수호자는 자신이 속해 있던 고을 이름을<br>
+            두 번째 <span class="highlight">문서 금고 비밀번호</span>로 사용했습니다.<br><br>
+            성읍마을이 속해 있던 그 고을의 이름은 무엇일까요?
         </div>
+        <p class="hint">CLUE) 정답은 ‘OO현’ 형태입니다.</p>
         <input type="text" id="answer-2" placeholder="예: ○○현">
-        <button onclick="checkAnswer(2, ['정의현'])">정답 확인</button>
+        <button onclick="checkAnswer(2, ['정의현'])">LOCK 해제</button>
     </div>
 
-    <!-- 3번 문제 -->
-    <div id="screen-3" class="hidden">
-        <h2>📍 미션 3</h2>
+    <!-- 3번 미션 -->
+    <div id="screen-3" class="hidden screen-block">
+        <div class="stage-label">CASE 3 · MYSTERY MESSAGE</div>
+        <h2>미션 3. 학문의 집, 암호의 집</h2>
+        <div class="mission-meta">위치: 대성전·명륜당 일대 · 난이도 ★★☆☆☆</div>
         <div class="mission-desc">
-            <p>
-                대성전과 학문 공간인 명륜당이<br>
-                나란히 배치된 이 곳은 어디일까요?
-            </p>
-            <p class="hint">힌트) 정답은 ‘OOO교’ 형태입니다.</p>
+            <strong>대성전</strong>과 학문 공간인 <strong>명륜당</strong>이<br>
+            나란히 배치된 이곳은,<br>
+            옛날 학생들이 공부하던 곳이었습니다.<br><br>
+            수호자는 이곳에 <span class="highlight">비밀 메시지</span>를 남겼습니다.<br><br>
+            이 공간의 이름은 무엇일까요?
         </div>
+        <p class="hint">CLUE) 정답은 ‘OOO교’ 형태입니다.</p>
         <input type="text" id="answer-3" placeholder="예: ○○○교">
-        <button onclick="checkAnswer(3, ['정의향교'])">정답 확인</button>
+        <button onclick="checkAnswer(3, ['정의향교'])">LOCK 해제</button>
     </div>
 
-    <!-- 4번 문제 -->
-    <div id="screen-4" class="hidden">
-        <h2>📍 미션 4</h2>
+    <!-- 4번 미션 -->
+    <div id="screen-4" class="hidden screen-block">
+        <div class="stage-label">CASE 4 · GUARDIAN IDENTITY</div>
+        <h2>미션 4. 성문 앞의 수호자</h2>
+        <div class="mission-meta">위치: 성문 근처 · 난이도 ★☆☆☆☆</div>
         <div class="mission-desc">
-            <p>
-                성읍마을 성문 앞에는 마을을 지켜주는<br>
-                수호신과 같은 존재가 있습니다.<br>
-                이것의 이름은 무엇일까요?
-            </p>
+            성읍마을 성문 앞에는 마을을 지켜주는<br>
+            <strong>수호신 같은 존재</strong>가 서 있습니다.<br><br>
+            수호자는 이 존재를 닮은 돌 조각을<br>
+            자신의 상징으로 삼았습니다.<br><br>
+            이 존재의 이름은 무엇일까요?
         </div>
-        <input type="text" id="answer-4" placeholder="정답을 입력하세요">
-        <button onclick="checkAnswer(4, ['돌하르방'])">정답 확인</button>
+        <input type="text" id="answer-4" placeholder="예: ○○○○">
+        <button onclick="checkAnswer(4, ['돌하르방'])">LOCK 해제</button>
     </div>
 
-    <!-- 5번 문제 -->
-    <div id="screen-5" class="hidden">
-        <h2>📍 미션 5</h2>
+    <!-- 5번 미션 -->
+    <div id="screen-5" class="hidden screen-block">
+        <div class="stage-label">CASE 5 · INTRUDER CODE</div>
+        <h2>미션 5. 성곽이 막으려 한 것</h2>
+        <div class="mission-meta">위치: 성곽·성문 주변 · 난이도 ★★☆☆☆</div>
         <div class="mission-desc">
-            <p>
-                남문 같은 성문과 성곽은<br>
-                바다를 건너 쳐들어오던 (  ㄱ  )과 같은 외적을<br>
-                막기 위해 쌓았습니다.<br><br>
-                ( ㄱ )에 들어갈 말은 무엇일까요?
-            </p>
+            남문 같은 성문과 성곽은,<br>
+            바다를 건너 쳐들어오던 (  ㄱ  )과 같은 외적을<br>
+            막기 위해 쌓았습니다.<br><br>
+            수호자는 이 침입자의 이름을<br>
+            <span class="highlight">경보 장치의 암호</span>로 사용했습니다.<br><br>
+            ( ㄱ )에 들어갈 말은 무엇일까요?
         </div>
         <input type="text" id="answer-5" placeholder="정답을 입력하세요">
-        <button onclick="checkAnswer(5, ['왜구'])">정답 확인</button>
+        <button onclick="checkAnswer(5, ['왜구'])">LOCK 해제</button>
     </div>
 
-    <!-- 6번 문제 -->
-    <div id="screen-6" class="hidden">
-        <h2>📍 미션 6</h2>
+    <!-- 6번 미션 -->
+    <div id="screen-6" class="hidden screen-block">
+        <div class="stage-label">CASE 6 · HIDDEN STORAGE</div>
+        <h2>미션 6. 방 안의 작은 창고</h2>
+        <div class="mission-meta">위치: 전통가옥 내부 · 난이도 ★★☆☆☆</div>
         <div class="mission-desc">
-            <p>
-                제주에서 살림살이, 음식재료, 곡식들을 보관하는<br>
-                작은 창고를 방에 두기도 했습니다.<br>
-                이것의 이름은 무엇일까요?
-            </p>
-            <p class="hint">힌트) 오래 걸었더니, 배고팡.</p>
+            제주에서는 살림살이, 음식재료, 곡식들을 보관하는<br>
+            작은 창고를 <strong>방 안에 두기도</strong> 했습니다.<br><br>
+            수호자는 이 작은 창고에<br>
+            비밀 문서를 숨겨 두었습니다.<br><br>
+            이 창고의 이름은 무엇일까요?
         </div>
+        <p class="hint">CLUE) 오래 걸었더니, 배고팡.</p>
         <input type="text" id="answer-6" placeholder="정답을 입력하세요">
-        <button onclick="checkAnswer(6, ['고팡'])">정답 확인</button>
+        <button onclick="checkAnswer(6, ['고팡'])">LOCK 해제</button>
     </div>
 
-    <!-- 7번 문제 -->
-    <div id="screen-7" class="hidden">
-        <h2>📍 미션 7</h2>
+    <!-- 7번 미션 -->
+    <div id="screen-7" class="hidden screen-block">
+        <div class="stage-label">CASE 7 · HIDDEN PATTERN</div>
+        <h2>미션 7. 볏집 지붕의 비밀</h2>
+        <div class="mission-meta">위치: 전통 초가 마을 · 난이도 ★☆☆☆☆</div>
         <div class="mission-desc">
-            <p>
-                성읍마을에서 볼 수 있는,<br>
-                볏집으로 지붕을 이은 제주의 전통 집을<br>
-                무엇이라고 할까요?
-            </p>
+            성읍마을에서 볼 수 있는,<br>
+            볏집으로 지붕을 이은 제주의 전통 집.<br><br>
+            수호자는 이 집들로 이어진 마을을<br>
+            하나의 <span class="highlight">보호막 패턴</span>으로 생각했습니다.<br><br>
+            이 전통 집을 무엇이라고 할까요?
         </div>
         <input type="text" id="answer-7" placeholder="정답을 입력하세요">
-        <button onclick="checkAnswer(7, ['초가집'])">정답 확인</button>
+        <button onclick="checkAnswer(7, ['초가집'])">LOCK 해제</button>
     </div>
 
-    <!-- 8번 문제 -->
-    <div id="screen-8" class="hidden">
-        <h2>📍 미션 8</h2>
+    <!-- 8번 미션 -->
+    <div id="screen-8" class="hidden screen-block">
+        <div class="stage-label">CASE 8 · DIRECTION LOCK</div>
+        <h2>미션 8. 금고의 방향키</h2>
+        <div class="mission-meta">위치: 입구 성문 주변 · 난이도 ★☆☆☆☆</div>
         <div class="mission-desc">
-            <p>
-                우리가 성읍마을에 들어온 입구는<br>
-                무슨 문일까요?<br><br>
-                남문, 서문, 동문 중에서 선택하세요.
-            </p>
+            수호자가 남긴 마지막 금고는,<br>
+            마을로 들어올 때 <strong>처음 통과한 문</strong>의<br>
+            방향을 비밀번호로 사용합니다.<br><br>
+            우리가 성읍마을에 들어온 입구는<br>
+            무슨 문이었을까요?<br><br>
+            <strong>남문, 서문, 동문</strong> 중에서 고르세요.
         </div>
         <input type="text" id="answer-8" placeholder="예: 남문 / 서문 / 동문">
-        <button onclick="checkAnswer(8, ['남문'])">정답 확인</button>
+        <button onclick="checkAnswer(8, ['남문'])">LOCK 해제</button>
     </div>
 
-    <!-- 9번 문제 -->
-    <div id="screen-9" class="hidden">
-        <h2>📍 미션 9</h2>
+    <!-- 9번 미션 + 사진 미션 안내 전 단계 -->
+    <div id="screen-9" class="hidden screen-block">
+        <div class="stage-label">CASE 9 · FINAL CLUE & TREE</div>
+        <h2>미션 9. 수호자의 나무</h2>
+        <div class="mission-meta">위치: 정의현 객사 근처 · 난이도 ★★☆☆☆</div>
         <div class="mission-desc">
-            <p>
-                성읍마을 정의현 객사 근처에는<br>
-                천연기념물로 지정된 아주 오래된 나무가 있습니다.<br>
-                이 나무는 바람에 강해서 제주 마을 어귀에<br>
-                정자나무로 많이 심었습니다.<br><br>
-                이 나무의 이름은 무엇일까요?
-            </p>
-            <p class="hint">힌트) O나무</p>
+            성읍마을 정의현 객사 근처에는<br>
+            천연기념물로 지정된 아주 오래된 나무가 있습니다.<br><br>
+            이 나무는 바람에 강해서<br>
+            제주 마을 어귀에 <strong>정자나무</strong>로 많이 심었습니다.<br><br>
+            수호자는 이 나무 아래에서<br>
+            자신이 지켜온 마을을 바라보곤 했습니다.<br><br>
+            이 나무의 이름은 무엇일까요?
         </div>
+        <p class="hint">CLUE) O나무</p>
         <input type="text" id="answer-9" placeholder="정답을 입력하세요">
-        <button onclick="checkAnswer(9, ['팽나무'])">정답 확인</button>
+        <button onclick="checkAnswer(9, ['팽나무'])">LOCK 해제</button>
     </div>
 
-    <!-- 🎉 탈출 성공 화면 -->
-    <div id="screen-end" class="hidden">
-        <h1>🎉 탈출 성공!</h1>
-        <h2 id="end-title"></h2>
-        <div class="story">
-            성읍민속마을의 9가지 미션을 모두 해결했습니다!<br><br>
-            제주 역사와 문화를 잘 탐험해 준 당신을 칭찬합니다.<br><br>
-            이 화면을 <strong>캡처</strong>해서 선생님께 제출하세요.
+    <!-- 10. 사진 미션 -->
+    <div id="screen-photo" class="hidden screen-block">
+        <div class="badge"><span>📷</span> PHOTO EVIDENCE</div>
+        <h3>사진 기록 미션: 수호자와의 약속</h3>
+        <div class="mission-meta">위치: 팽나무 아래</div>
+        <div class="mission-desc">
+            모든 암호가 해독되었습니다.<br><br>
+            이제 마지막으로,<br>
+            당신이 이 마을의 새로운 수호자가 되겠다는<br>
+            <span class="highlight">증거 사진(Evidence)</span>을 남겨야 합니다.<br><br>
+            <strong>팽나무 아래에서</strong><br>
+            혼자 또는 친구들과 함께<br>
+            <strong>셀카·기념사진</strong>을 찍어 보세요.
         </div>
+        <p class="small">
+            ※ 이 사진은 이 기기 안에서만 보이며,<br>
+            서버에 따로 저장되지 않습니다.<br>
+            선생님께는 화면을 직접 보여주거나<br>
+            학생이 따로 캡처해서 제출하면 됩니다.
+        </p>
+
+        <input type="file" accept="image/*" capture="environment" id="photo-input" onchange="previewPhoto(event)">
+        <div class="small">‘카메라로 촬영’ 또는 앨범에서 사진을 선택해 주세요.</div>
+        <img id="photo-preview" class="photo-preview" alt="사진 미리보기">
+
+        <br>
+        <button onclick="finishGame()">최종 금고 열기</button>
     </div>
 
+    <!-- 최종 탈출 화면 -->
+    <div id="screen-end" class="hidden screen-block">
+        <div class="upper-label">FINAL REPORT</div>
+        <h2>최종 보고서: 수호자의 암호 해제</h2>
+        <p class="tagline">모든 LOCK 해제 완료 · 사건 종료</p>
+
+        <div class="story">
+            <span id="end-title" class="highlight"></span><br><br>
+            당신은 1890년 수호자가 남긴<br>
+            모든 암호를 해독하고,<br>
+            성읍마을의 비밀을 안전하게 지켜 냈습니다.<br><br>
+            이제 이 마을의 이야기는<br>
+            <strong>당신의 기억 속 기록</strong>으로 남게 됩니다.
+        </div>
+
+        <div class="code-box">
+            ▶ Game Title: 성읍 1890: 사라진 수호자의 암호<br>
+            ▶ Detective: <span id="end-name" class="highlight"></span><br>
+            ▶ Status: ✅ All Codes Cracked & Photo Evidence Taken
+        </div>
+
+        <p class="hint" style="margin-top: 10px;">
+            이 화면을 <strong>캡처</strong>해서 선생님께 제출하세요.<br>
+            (이름과 “All Codes Cracked” 문구가 보이게 찍어 주세요.)
+        </p>
+    </div>
+
+  </div>
 </div>
 
 <script>
-    // 플레이어 이름 저장 변수
+    // 플레이어 이름
     let playerName = '';
 
-    // 이름 저장 후 시작 화면으로 이동
     function saveNameAndStart() {
         const nameInput = document.getElementById('player-name').value.trim();
         if (!nameInput) {
-            alert('이름 또는 조 이름을 입력해 주세요.');
+            alert('실제 이름을 입력해 주세요.');
             return;
         }
         playerName = nameInput;
@@ -276,9 +599,7 @@
         document.getElementById('screen-start').classList.remove('hidden');
     }
 
-    // 특정 미션 화면으로 이동
     function goToMission(n) {
-        // 시작 화면 숨기고 n번 미션 보이기
         document.getElementById('screen-start').classList.add('hidden');
         document.getElementById('screen-' + n).classList.remove('hidden');
     }
@@ -287,37 +608,58 @@
     function checkAnswer(missionNumber, correctAnswers) {
         const inputEl = document.getElementById('answer-' + missionNumber);
         let userInput = inputEl.value.trim();
+        userInput = userInput.replace(/\s+/g, ''); // 공백 제거
 
-        // 공백 제거 + 전각 공백 방지
-        userInput = userInput.replace(/\s+/g, '');
-        
         let isCorrect = false;
 
-        // 정답 배열과 비교 (대소문자 구분 없음, 한글은 그대로)
         for (let i = 0; i < correctAnswers.length; i++) {
-            if (userInput === correctAnswers[i].replace(/\s+/g, '')) {
+            const ans = correctAnswers[i].replace(/\s+/g, '');
+            if (userInput === ans) {
                 isCorrect = true;
                 break;
             }
         }
 
         if (isCorrect) {
-            alert('정답입니다! 👏');
-            // 현재 미션 화면 숨기기
+            alert('정답입니다! 👏 다음 단서로 이동합니다.');
             document.getElementById('screen-' + missionNumber).classList.add('hidden');
 
-            // 마지막 문제면 엔딩, 아니면 다음 문제로
+            // 9번까지 끝나면 사진 미션으로
             if (missionNumber === 9) {
-                // 이름을 포함한 탈출 문구 설정
-                const endTitle = document.getElementById('end-title');
-                endTitle.textContent = playerName + ' 님, 탈출에 성공하셨습니다!';
-                document.getElementById('screen-end').classList.remove('hidden');
+                document.getElementById('screen-photo').classList.remove('hidden');
             } else {
                 document.getElementById('screen-' + (missionNumber + 1)).classList.remove('hidden');
             }
         } else {
-            alert('틀렸습니다. 🥲 주변 안내판과 단서를 다시 잘 살펴보세요!');
+            alert('틀렸습니다. 🕵️‍♂️\n주변 안내판과 단서를 다시 한 번 살펴보세요!');
         }
+    }
+
+    // 사진 미리보기 (기념사진용)
+    function previewPhoto(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const img = document.getElementById('photo-preview');
+        img.src = URL.createObjectURL(file);
+        img.style.display = 'block';
+    }
+
+    // 게임 종료 처리
+    function finishGame() {
+        const fileInput = document.getElementById('photo-input');
+        if (!fileInput.files || fileInput.files.length === 0) {
+            const proceed = confirm('사진이 선택되지 않았습니다.\n그래도 게임을 끝내시겠습니까?');
+            if (!proceed) return;
+        }
+
+        document.getElementById('screen-photo').classList.add('hidden');
+        document.getElementById('screen-end').classList.remove('hidden');
+
+        const endTitle = document.getElementById('end-title');
+        const endName = document.getElementById('end-name');
+        endTitle.textContent = playerName + ' 님, 모든 암호를 풀고 탈출에 성공하셨습니다!';
+        endName.textContent = playerName;
     }
 </script>
 
