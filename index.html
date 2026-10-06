@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>성읍민속마을 방탈출 - 제주 아이템 수집</title>
+    <title>성읍민속마을 방탈출 - 제주 탐험</title>
     <style>
         body {
             font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
@@ -43,7 +43,7 @@
         }
 
         input[type="text"] {
-            width: 80%;
+            width: 85%;
             padding: 12px;
             margin-bottom: 15px;
             border: 2px solid #ddd;
@@ -60,46 +60,19 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            width: 85%;
+            width: 90%;
             transition: background-color 0.3s;
         }
         button:hover { background-color: #45a049; }
 
-        /* 아이템 바 영역 */
-        .item-bar {
-            background: #fff7e6;
-            border: 1px solid #f0d9a7;
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            text-align: left;
-        }
-        .item-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #b86b00;
-        }
-        .item-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .item {
-            padding: 5px 8px;
-            border-radius: 8px;
+        .hint {
             font-size: 13px;
-            border: 1px solid #ccc;
+            color: #777;
+            margin-top: 5px;
         }
-        .item.locked {
-            background: #eee;
-            color: #999;
-        }
-        .item.unlocked {
-            background: #ffe08a;
-            color: #5b3b00;
-            border-color: #f5b041;
+        .name-label {
             font-weight: bold;
+            margin-bottom: 8px;
         }
     </style>
 </head>
@@ -107,213 +80,243 @@
 
 <div class="container">
 
-    <!-- 🔑 아이템 현황 바 (게임 전체 공통) -->
-    <div id="item-bar" class="hidden item-bar">
-        <div class="item-title">🧺 모은 제주 아이템</div>
-        <div class="item-list">
-            <div id="item-1" class="item locked">정낭 ❌</div>
-            <div id="item-2" class="item locked">흑돼지 ❌</div>
-            <div id="item-3" class="item locked">물허벅 ❌</div>
-            <div id="item-4" class="item locked">돌하르방 ❌</div>
-        </div>
-    </div>
-
-    <!-- 🎬 시작 화면 -->
-    <div id="screen-start">
-        <h1>🕵️‍♂️ 성읍민속마을 방탈출</h1>
-        <h2>[제주 아이템을 모두 모아라]</h2>
+    <!-- 0. 이름 입력 화면 -->
+    <div id="screen-name">
+        <h1>🕵️‍♀️ 성읍민속마을 방탈출</h1>
+        <h2>[제주 역사·문화 탐험]</h2>
         <div class="story">
-            "앗! 눈을 떠보니 옛 제주 마을로 시간 여행을 오고 말았다!<br><br>
-            원래의 시간으로 돌아가기 위해서는 성읍민속마을 곳곳에서
-            <strong>제주 아이템 4가지를 모두 모아야</strong> 한다!<br><br>
-            아이템을 모으면 비밀의 돌하르방이 깨어나
-            탈출 문을 열어 준다고 한다..."
+            "성읍민속마을로 시간 여행을 온 당신!<br><br>
+            제주에 대한 9개의 비밀 미션을 모두 해결하면<br>
+            마을을 무사히 탈출할 수 있습니다.<br><br>
+            먼저, 아래에 <strong>이름이나 조 이름</strong>을 적어 주세요."
         </div>
-        <button onclick="startGame()">시간 여행 시작하기</button>
+        <div class="name-label">이름 또는 조 이름을 적어 주세요</div>
+        <input type="text" id="player-name" placeholder="예: 3조 홍길동">
+        <button onclick="saveNameAndStart()">시작하기</button>
     </div>
 
-    <!-- 📍 미션 1 화면 -->
+    <!-- 1. 시작 안내 화면 -->
+    <div id="screen-start" class="hidden">
+        <h1>성읍민속마을 방탈출</h1>
+        <h2>미션을 모두 해결하고 탈출하라!</h2>
+        <div class="story">
+            "이제부터 성읍민속마을 곳곳을 돌아다니며<br>
+            안내판과 주변 풍경을 잘 살펴보세요.<br><br>
+            문제의 정답은 모두 이 마을 어딘가에 숨어 있습니다.<br><br>
+            모든 미션을 해결하면<br>
+            <strong>마지막에 당신의 이름과 함께 탈출 성공 화면</strong>이 나타납니다.<br>
+            그 화면을 캡처해서 선생님께 제출하세요."
+        </div>
+        <button onclick="goToMission(1)">첫 번째 미션 시작하기</button>
+    </div>
+
+    <!-- 1번 문제 -->
     <div id="screen-1" class="hidden">
-        <h2>📍 미션 1. 제주의 대문</h2>
+        <h2>📍 미션 1</h2>
         <div class="mission-desc">
-            <p><strong>🔎 관찰 포인트:</strong> 초가집 입구의 돌기둥(정주석)과 나무막대기(정낭)</p>
-            <p>옛 제주 사람들은 대문 대신 '정낭'이라는 나무막대기를 걸어두어 주인의 외출을 알렸습니다.<br><br>
-            그렇다면 집 주인이 <strong>"아주 멀리 가서 며칠 동안 돌아오지 않는다"</strong>를 뜻하는
-            나무막대기의 개수는 몇 개인가요?</p>
-            <p><em>💡 정답을 맞히면 첫 번째 아이템 <strong>정낭</strong>을 얻습니다!</em></p>
+            <p>
+                제주목사 이형상이 제주도를 순력하며<br>
+                화공 김남길에게 제주도의 풍속과 생활 모습을 담은<br>
+                그림을 그리게 하였습니다.<br><br>
+                이 그림의 이름은 무엇일까요?
+            </p>
+            <p style="font-size: 13px; color:#555;">
+                *순력: 조선시대 지방관이 자신이 다스리는 고을을 돌며<br>
+                행정과 군사 등 여러 사항을 점검하던 제도
+            </p>
+            <p class="hint">힌트) 활쏘는 체험장 앞 안내판을 잘 살펴보세요.</p>
         </div>
-        <input type="text" id="answer-1" placeholder="숫자로만 입력 (예: 1)">
-        <button onclick="checkAnswer(1, '3')">정답 확인</button>
+        <input type="text" id="answer-1" placeholder="정답을 입력하세요">
+        <button onclick="checkAnswer(1, ['탐라순력도'])">정답 확인</button>
     </div>
 
-    <!-- 📍 미션 2 화면 -->
+    <!-- 2번 문제 -->
     <div id="screen-2" class="hidden">
-        <h2>📍 미션 2. 마을의 중심을 찾아라</h2>
+        <h2>📍 미션 2</h2>
         <div class="mission-desc">
-            <p><strong>🔎 관찰 포인트:</strong> 거대한 느티나무와 팽나무, 그 뒤의 옛 관아</p>
-            <p>거대한 옛 나무들이 지키고 있는 이곳은 옛 정의현 사또가 업무를 보던 관청입니다.<br><br>
-            안내판을 읽어보고 이 건물의 이름을 적어주세요.</p>
-            <p><em>💡 정답을 맞히면 두 번째 아이템 <strong>흑돼지</strong>를 얻습니다!</em></p>
+            <p>
+                조선시대 제주는 3개의 고을로 나뉘어 있었습니다.<br>
+                성읍마을이 속했던 고을은 어디일까요?
+            </p>
+            <p class="hint">힌트) 정답은 ‘OO현’ 형태입니다.</p>
         </div>
-        <input type="text" id="answer-2" placeholder="세 글자 입력">
-        <button onclick="checkAnswer(2, '일관헌')">정답 확인</button>
+        <input type="text" id="answer-2" placeholder="예: ○○현">
+        <button onclick="checkAnswer(2, ['정의현'])">정답 확인</button>
     </div>
 
-    <!-- 📍 미션 3 화면 -->
+    <!-- 3번 문제 -->
     <div id="screen-3" class="hidden">
-        <h2>📍 미션 3. 제주의 특별한 화장실</h2>
+        <h2>📍 미션 3</h2>
         <div class="mission-desc">
-            <p><strong>🔎 관찰 포인트:</strong> 초가집 마당 한편에 있는 화장실</p>
-            <p>옛 제주도의 전통 화장실인 '통시'를 찾아보세요.<br><br>
-            이곳은 화장실이자 동시에 '이 동물'을 기르는 곳이었습니다.
-            지금도 제주도에서 아주 유명한 이 검은 동물은 무엇일까요?</p>
-            <p><em>💡 정답을 맞히면 세 번째 아이템 <strong>물허벅</strong>을 얻습니다!</em></p>
+            <p>
+                대성전과 학문 공간인 명륜당이<br>
+                나란히 배치된 이 곳은 어디일까요?
+            </p>
+            <p class="hint">힌트) 정답은 ‘OOO교’ 형태입니다.</p>
         </div>
-        <input type="text" id="answer-3" placeholder="동물 이름 입력">
-        <button onclick="checkAnswer(3, ['흑돼지', '돼지'])">정답 확인</button>
+        <input type="text" id="answer-3" placeholder="예: ○○○교">
+        <button onclick="checkAnswer(3, ['정의향교'])">정답 확인</button>
     </div>
 
-    <!-- 📍 미션 4 화면 -->
+    <!-- 4번 문제 -->
     <div id="screen-4" class="hidden">
-        <h2>📍 미션 4. 생명수 나르기</h2>
+        <h2>📍 미션 4</h2>
         <div class="mission-desc">
-            <p><strong>🔎 관찰 포인트:</strong> 마당이나 부엌 주변의 항아리와 바구니</p>
-            <p>화산송이로 이루어진 제주는 물이 아주 귀했습니다.
-            여인들은 물을 길어 나를 때 '구덕'이라는 대나무 바구니에 '이 항아리'를 넣어 등에 지고 다녔습니다.<br><br>
-            이 항아리의 이름은 무엇일까요?</p>
-            <p><em>💡 정답을 맞히면 마지막 아이템 <strong>돌하르방</strong>이 깨어나
-            탈출 문이 열립니다!</em></p>
+            <p>
+                성읍마을 성문 앞에는 마을을 지켜주는<br>
+                수호신과 같은 존재가 있습니다.<br>
+                이것의 이름은 무엇일까요?
+            </p>
         </div>
-        <input type="text" id="answer-4" placeholder="정답 입력">
-        <button onclick="checkAnswer(4, ['물허벅', '허벅'])">정답 확인</button>
+        <input type="text" id="answer-4" placeholder="정답을 입력하세요">
+        <button onclick="checkAnswer(4, ['돌하르방'])">정답 확인</button>
     </div>
 
-    <!-- 🎉 성공 화면 -->
+    <!-- 5번 문제 -->
+    <div id="screen-5" class="hidden">
+        <h2>📍 미션 5</h2>
+        <div class="mission-desc">
+            <p>
+                남문 같은 성문과 성곽은<br>
+                바다를 건너 쳐들어오던 (  ㄱ  )과 같은 외적을<br>
+                막기 위해 쌓았습니다.<br><br>
+                ( ㄱ )에 들어갈 말은 무엇일까요?
+            </p>
+        </div>
+        <input type="text" id="answer-5" placeholder="정답을 입력하세요">
+        <button onclick="checkAnswer(5, ['왜구'])">정답 확인</button>
+    </div>
+
+    <!-- 6번 문제 -->
+    <div id="screen-6" class="hidden">
+        <h2>📍 미션 6</h2>
+        <div class="mission-desc">
+            <p>
+                제주에서 살림살이, 음식재료, 곡식들을 보관하는<br>
+                작은 창고를 방에 두기도 했습니다.<br>
+                이것의 이름은 무엇일까요?
+            </p>
+            <p class="hint">힌트) 오래 걸었더니, 배고팡.</p>
+        </div>
+        <input type="text" id="answer-6" placeholder="정답을 입력하세요">
+        <button onclick="checkAnswer(6, ['고팡'])">정답 확인</button>
+    </div>
+
+    <!-- 7번 문제 -->
+    <div id="screen-7" class="hidden">
+        <h2>📍 미션 7</h2>
+        <div class="mission-desc">
+            <p>
+                성읍마을에서 볼 수 있는,<br>
+                볏집으로 지붕을 이은 제주의 전통 집을<br>
+                무엇이라고 할까요?
+            </p>
+        </div>
+        <input type="text" id="answer-7" placeholder="정답을 입력하세요">
+        <button onclick="checkAnswer(7, ['초가집'])">정답 확인</button>
+    </div>
+
+    <!-- 8번 문제 -->
+    <div id="screen-8" class="hidden">
+        <h2>📍 미션 8</h2>
+        <div class="mission-desc">
+            <p>
+                우리가 성읍마을에 들어온 입구는<br>
+                무슨 문일까요?<br><br>
+                남문, 서문, 동문 중에서 선택하세요.
+            </p>
+        </div>
+        <input type="text" id="answer-8" placeholder="예: 남문 / 서문 / 동문">
+        <button onclick="checkAnswer(8, ['남문'])">정답 확인</button>
+    </div>
+
+    <!-- 9번 문제 -->
+    <div id="screen-9" class="hidden">
+        <h2>📍 미션 9</h2>
+        <div class="mission-desc">
+            <p>
+                성읍마을 정의현 객사 근처에는<br>
+                천연기념물로 지정된 아주 오래된 나무가 있습니다.<br>
+                이 나무는 바람에 강해서 제주 마을 어귀에<br>
+                정자나무로 많이 심었습니다.<br><br>
+                이 나무의 이름은 무엇일까요?
+            </p>
+            <p class="hint">힌트) O나무</p>
+        </div>
+        <input type="text" id="answer-9" placeholder="정답을 입력하세요">
+        <button onclick="checkAnswer(9, ['팽나무'])">정답 확인</button>
+    </div>
+
+    <!-- 🎉 탈출 성공 화면 -->
     <div id="screen-end" class="hidden">
         <h1>🎉 탈출 성공!</h1>
-        <h2>모든 제주 아이템 수집 완료!</h2>
+        <h2 id="end-title"></h2>
         <div class="story">
-            정낭, 흑돼지, 물허벅, 돌하르방까지<br>
-            <strong>4가지 제주 아이템을 모두 모았습니다!</strong><br><br>
-            돌하르방이 눈을 뜨며 조용히 입을 엽니다.<br>
-            "수고했수다, 이제 원래 세상으로 돌아가도 좋쿠다."<br><br>
-            당신은 무사히 현재로 돌아왔습니다.<br><br>
-            성읍민속마을 탐험을 훌륭하게 마친 것을 축하합니다!<br>
-            선생님께 가서 미션 완료 화면을 보여주세요.
+            성읍민속마을의 9가지 미션을 모두 해결했습니다!<br><br>
+            제주 역사와 문화를 잘 탐험해 준 당신을 칭찬합니다.<br><br>
+            이 화면을 <strong>캡처</strong>해서 선생님께 제출하세요.
         </div>
     </div>
 
 </div>
 
 <script>
-    // 아이템 획득 여부 배열 (index 1~4 사용)
-    let items = [null, false, false, false, false];
+    // 플레이어 이름 저장 변수
+    let playerName = '';
 
-    // 아이템 이름과 설명을 모아둔 객체
-    const itemInfo = {
-        1: {
-            name: '정낭',
-            desc: '제주 초가집의 전통 대문으로, 나무 막대기의 개수로 집 주인의 부재 여부를 알렸어요.'
-        },
-        2: {
-            name: '흑돼지',
-            desc: '통시 밑에서 자라던 제주 전통 돼지로, 지금은 제주를 대표하는 특산물이 되었어요.'
-        },
-        3: {
-            name: '물허벅',
-            desc: '제주 여인들이 물을 길을 때 사용하던 독특한 모양의 물항아리예요.'
-        },
-        4: {
-            name: '돌하르방',
-            desc: '제주의 수호신 역할을 하던 돌 신상으로, 마을 입구를 지키던 상징적인 존재예요.'
+    // 이름 저장 후 시작 화면으로 이동
+    function saveNameAndStart() {
+        const nameInput = document.getElementById('player-name').value.trim();
+        if (!nameInput) {
+            alert('이름 또는 조 이름을 입력해 주세요.');
+            return;
         }
-    };
+        playerName = nameInput;
+        document.getElementById('screen-name').classList.add('hidden');
+        document.getElementById('screen-start').classList.remove('hidden');
+    }
 
-    // 게임 시작
-    function startGame() {
+    // 특정 미션 화면으로 이동
+    function goToMission(n) {
+        // 시작 화면 숨기고 n번 미션 보이기
         document.getElementById('screen-start').classList.add('hidden');
-        document.getElementById('item-bar').classList.remove('hidden');
-        document.getElementById('screen-1').classList.remove('hidden');
+        document.getElementById('screen-' + n).classList.remove('hidden');
     }
 
-    // 아이템 바 UI 업데이트
-    function updateItemBar() {
-        for (let i = 1; i <= 4; i++) {
-            const el = document.getElementById('item-' + i);
-            if (!el) continue;
-            if (items[i]) {
-                el.classList.remove('locked');
-                el.classList.add('unlocked');
-                el.textContent = itemInfo[i].name + ' ✅';
-            } else {
-                el.classList.remove('unlocked');
-                el.classList.add('locked');
-                el.textContent = itemInfo[i].name + ' ❌';
-            }
-        }
-    }
+    // 정답 확인 공통 함수
+    function checkAnswer(missionNumber, correctAnswers) {
+        const inputEl = document.getElementById('answer-' + missionNumber);
+        let userInput = inputEl.value.trim();
 
-    // 정답 확인
-    function checkAnswer(missionNumber, correctAnswer) {
-        let userInput = document
-            .getElementById('answer-' + missionNumber)
-            .value
-            .replace(/\s+/g, ''); // 공백 제거
-
+        // 공백 제거 + 전각 공백 방지
+        userInput = userInput.replace(/\s+/g, '');
+        
         let isCorrect = false;
 
-        if (Array.isArray(correctAnswer)) {
-            if (correctAnswer.includes(userInput)) {
+        // 정답 배열과 비교 (대소문자 구분 없음, 한글은 그대로)
+        for (let i = 0; i < correctAnswers.length; i++) {
+            if (userInput === correctAnswers[i].replace(/\s+/g, '')) {
                 isCorrect = true;
-            }
-        } else {
-            if (userInput === correctAnswer) {
-                isCorrect = true;
+                break;
             }
         }
 
         if (isCorrect) {
-            // 아이템 지급 및 설명 표시
-            giveItemForMission(missionNumber);
-
-            // 현재 화면 숨기기
+            alert('정답입니다! 👏');
+            // 현재 미션 화면 숨기기
             document.getElementById('screen-' + missionNumber).classList.add('hidden');
 
-            // 다음 화면 또는 엔딩으로 이동
-            let nextScreen = (missionNumber === 4) ? 'screen-end' : 'screen-' + (missionNumber + 1);
-            document.getElementById(nextScreen).classList.remove('hidden');
+            // 마지막 문제면 엔딩, 아니면 다음 문제로
+            if (missionNumber === 9) {
+                // 이름을 포함한 탈출 문구 설정
+                const endTitle = document.getElementById('end-title');
+                endTitle.textContent = playerName + ' 님, 탈출에 성공하셨습니다!';
+                document.getElementById('screen-end').classList.remove('hidden');
+            } else {
+                document.getElementById('screen-' + (missionNumber + 1)).classList.remove('hidden');
+            }
         } else {
-            alert("틀렸습니다. 🥲 단서를 다시 잘 살펴보고 입력해 보세요!");
-        }
-    }
-
-    // 미션 성공 시 아이템 지급 + 설명 안내
-    function giveItemForMission(missionNumber) {
-        // 미션 번호 → 아이템 번호 매핑
-        const missionToItem = {
-            1: 1,
-            2: 2,
-            3: 3,
-            4: 4
-        };
-
-        let itemNo = missionToItem[missionNumber];
-        // 이미 획득한 아이템이면 중복 처리 X
-        if (!items[itemNo]) {
-            items[itemNo] = true;
-            updateItemBar();
-
-            const info = itemInfo[itemNo];
-            // 아이템 이름 + 간단 설명을 함께 안내
-            alert(
-                "정답입니다! 👏\n\n" +
-                "새로운 제주 아이템을 얻었습니다.\n\n" +
-                "🧺 획득 아이템: " + info.name + "\n" +
-                "📘 설명: " + info.desc
-            );
-        } else {
-            // 이론상 한 번만 맞추게 되지만, 혹시 모를 경우를 대비한 처리
-            alert("정답입니다! 👏 이미 이 미션의 아이템은 얻었어요.");
+            alert('틀렸습니다. 🥲 주변 안내판과 단서를 다시 잘 살펴보세요!');
         }
     }
 </script>
