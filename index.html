@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>성읍 1890: 방탈출 미션</title>
+    <title>성읍 방탈출 미션</title>
     <style>
         /* ====== 전체 배경 & 기본 글꼴 ====== */
         body {
             font-family: 'Malgun Gothic', '맑은 고딕', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            /* 원하시면 아래 url('...') 안에 배경 이미지 주소를 넣으세요 */
-            background:
-                radial-gradient(circle at top, #020617 0, #000000 55%, #020617 100%);
-                /* , url('여기에_배경이미지_URL') center/cover no-repeat fixed; */
+            /* JS에서 동적으로 background를 바꿀 것이므로, 여기서는 기본색만 지정 */
+            background: #000000;
             margin: 0;
             padding: 16px;
             display: flex;
@@ -19,6 +17,7 @@
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
+            transition: background 0.5s ease; /* 배경 전환도 부드럽게 */
         }
 
         /* ====== 중앙 카드 (모바일 앱 느낌) ====== */
@@ -68,6 +67,25 @@
 
         .hidden {
             display: none !important;
+        }
+
+        .screen-block {
+            margin-top: 6px;
+            opacity: 0;
+            transform: translateY(12px);
+            pointer-events: none;
+        }
+
+        .screen-block.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         /* ====== 상단 열쇠 진행바 ====== */
@@ -148,10 +166,6 @@
         }
 
         /* ====== 공통 텍스트 ====== */
-        .screen-block {
-            margin-top: 6px;
-        }
-
         .upper-label {
             font-size: 10px;
             color: #9ca3af;
@@ -255,10 +269,23 @@
             background: rgba(15, 23, 42, 0.96);
             color: #e5e7eb;
             box-sizing: border-box;
+            transition: border-color 0.2s ease;
         }
 
         input[type="text"]::placeholder {
             color: #6b7280;
+        }
+
+        /* 오답시 흔들림 효과 */
+        input.shake {
+            animation: shake 0.3s;
+            border-color: #ef4444 !important;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
         }
 
         input[type="file"] {
@@ -367,7 +394,7 @@
     <!-- 헤더 -->
     <div class="header">
         <div class="title-block">
-            <h1>성읍 1890: 방탈출 미션</h1>
+            <h1>성읍 방탈출 미션</h1>
             <div class="subtitle">Seongeup Folk Village · Field Escape</div>
         </div>
         <div class="badge-game">
@@ -380,7 +407,7 @@
     <div class="main-scroll">
 
         <!-- 이름 입력 화면 -->
-        <div id="screen-name" class="screen-block">
+        <div id="screen-name" class="screen-block active">
             <div class="upper-label">ENTRY LOG</div>
             <h2>성읍 시간탐험단 등록</h2>
             <p class="tagline">
@@ -388,9 +415,9 @@
             </p>
             <div class="mission-panel">
                 <div class="mission-label">PRE-BRIEFING</div>
-                <h3 class="mission-title" style="margin:0 0 8px;font-size:18px;">1890년, 사라진 기록의 수호자</h3>
+                <h3 class="mission-title" style="margin:0 0 8px;font-size:18px;">사라진 기록의 수호자</h3>
                 <p class="mission-text">
-                    1890년, 성읍마을을 지키던 한 사람이<br>
+                    옛 성읍마을을 지키던 한 사람이<br>
                     마을의 비밀을 여러 개의 암호로 나누어<br>
                     성읍 곳곳에 숨겨 두었습니다.<br><br>
                     그는 마지막 기록에 이렇게 남겼습니다.<br>
@@ -416,7 +443,7 @@
         </div>
 
         <!-- 브리핑 화면 -->
-        <div id="screen-start" class="hidden screen-block">
+        <div id="screen-start" class="screen-block hidden">
             <div class="upper-label">BRIEFING ROOM</div>
             <h2>현장 방탈출 규칙</h2>
             <p class="tagline">
@@ -445,7 +472,7 @@
         </div>
 
         <!-- Room 1 -->
-        <div id="screen-1" class="hidden screen-block">
+        <div id="screen-1" class="screen-block hidden">
           <div class="mission-panel">
             <div class="mission-label">MISSION 1 / 9 · 옛 제주 기록실</div>
             <h2 class="mission-title">탐라를 그린 비밀 지도</h2>
@@ -476,7 +503,7 @@
         </div>
 
         <!-- Room 2 -->
-        <div id="screen-2" class="hidden screen-block">
+        <div id="screen-2" class="screen-block hidden">
           <div class="mission-panel">
             <div class="mission-label">MISSION 2 / 9 · 세 갈래의 고을</div>
             <h2 class="mission-title">성읍이 속한 옛 이름</h2>
@@ -485,7 +512,7 @@
             </p>
             <p class="mission-text">
               성읍민속마을 전체를 보여주는 <strong>마을 안내도</strong> 근처로 이동하세요.<br><br>
-              조선시대 제주도는 <strong>3개의 고을</strong>로 나뉘어 있었습니다.<br>
+              조선시대 제주는 <strong>3개의 고을</strong>로 나뉘어 있었습니다.<br>
               그 가운데 성읍마을이 속해 있던 고을의 이름이<br>
               두 번째 잠금장치의 비밀번호입니다.
             </p>
@@ -502,7 +529,7 @@
         </div>
 
         <!-- Room 3 -->
-        <div id="screen-3" class="hidden screen-block">
+        <div id="screen-3" class="screen-block hidden">
           <div class="mission-panel">
             <div class="mission-label">MISSION 3 / 9 · 학문의 집</div>
             <h2 class="mission-title">공부하던 사람들의 공간</h2>
@@ -528,7 +555,7 @@
         </div>
 
         <!-- Room 4 -->
-        <div id="screen-4" class="hidden screen-block">
+        <div id="screen-4" class="screen-block hidden">
           <div class="mission-panel">
             <div class="mission-label">MISSION 4 / 9 · 돌의 수호자</div>
             <h2 class="mission-title">성문 앞의 눈</h2>
@@ -551,7 +578,7 @@
         </div>
 
         <!-- Room 5 -->
-        <div id="screen-5" class="hidden screen-block">
+        <div id="screen-5" class="screen-block hidden">
           <div class="mission-panel">
             <div class="mission-label">MISSION 5 / 9 · 침입자의 그림자</div>
             <h2 class="mission-title">성을 쌓은 이유</h2>
@@ -575,7 +602,7 @@
         </div>
 
         <!-- Room 6 -->
-        <div id="screen-6" class="hidden screen-block">
+        <div id="screen-6" class="screen-block hidden">
           <div class="mission-panel">
             <div class="mission-label">MISSION 6 / 9 · 방 속의 방</div>
             <h2 class="mission-title">살림을 지키는 작은 창고</h2>
@@ -598,7 +625,7 @@
         </div>
 
         <!-- Room 7 -->
-        <div id="screen-7" class="hidden screen-block">
+        <div id="screen-7" class="screen-block hidden">
           <div class="mission-panel">
             <div class="mission-label">MISSION 7 / 9 · 볏집 지붕</div>
             <h2 class="mission-title">바람과 함께 사는 집</h2>
@@ -619,7 +646,7 @@
         </div>
 
         <!-- Room 8 -->
-        <div id="screen-8" class="hidden screen-block">
+        <div id="screen-8" class="screen-block hidden">
           <div class="mission-panel">
             <div class="mission-label">MISSION 8 / 9 · 입구의 방향</div>
             <h2 class="mission-title">우리가 지나온 문</h2>
@@ -640,7 +667,7 @@
         </div>
 
         <!-- Room 9 -->
-        <div id="screen-9" class="hidden screen-block">
+        <div id="screen-9" class="screen-block hidden">
           <div class="mission-panel">
             <div class="mission-label">MISSION 9 / 9 · 마을의 나무</div>
             <h2 class="mission-title">수호자의 그늘</h2>
@@ -665,7 +692,7 @@
         </div>
 
         <!-- 사진 미션 -->
-        <div id="screen-photo" class="hidden screen-block">
+        <div id="screen-photo" class="screen-block hidden">
             <div class="mission-panel">
                 <div class="mission-label">FINAL MISSION · PHOTO LOG</div>
                 <h2 class="mission-title">팽나무 아래의 약속</h2>
@@ -695,10 +722,10 @@
         </div>
 
         <!-- 최종 탈출 화면 -->
-        <div id="screen-end" class="hidden screen-block">
+        <div id="screen-end" class="screen-block hidden">
             <div class="mission-panel">
                 <div class="mission-label">CASE CLOSED</div>
-                <h2 class="mission-title">성읍 1890: 탈출 완료</h2>
+                <h2 class="mission-title">성읍 방탈출: 탈출 완료</h2>
                 <p class="mission-text">
                     <span id="end-title" class="highlight"></span><br><br>
                     당신은 9개의 잠금장치를 모두 해제하고,<br>
@@ -709,7 +736,7 @@
                 </p>
 
                 <div class="code-box">
-                    ▶ Game: 성읍 1890: 방탈출 미션<br>
+                    ▶ Game: 성읍 방탈출 미션<br>
                     ▶ Player: <span id="end-name" class="highlight"></span><br>
                     ▶ Status: ALL 9 LOCKS RELEASED<br>
                     ▶ Evidence: 팽나무 아래의 사진
@@ -728,6 +755,36 @@
 
 <script>
     let playerName = '';
+
+    // 기본 배경(gradient) 문자열
+    const BASE_BG = 'radial-gradient(circle at top, #020617 0, #000000 55%, #020617 100%)';
+
+    // Room별 배경 이미지 설정 (선택 사항)
+    // url("이미지주소") 형태로 채워 넣으면 해당 화면에서 자동 적용됩니다.
+    const roomBackgrounds = {
+        'screen-name': '',            // 예: 'url("https://.../intro.jpg")'
+        'screen-start': '',
+        'screen-1': '',               // 예: 탐라순력도 느낌 배경
+        'screen-2': '',
+        'screen-3': '',
+        'screen-4': '',
+        'screen-5': '',
+        'screen-6': '',
+        'screen-7': '',
+        'screen-8': '',
+        'screen-9': '',
+        'screen-photo': '',
+        'screen-end': ''
+    };
+
+    function setBackground(screenId) {
+        const img = roomBackgrounds[screenId] || '';
+        if (img) {
+            document.body.style.background = BASE_BG + ', ' + img + ' center/cover no-repeat fixed';
+        } else {
+            document.body.style.background = BASE_BG;
+        }
+    }
 
     // 열쇠 진행 상태 업데이트
     function updateKeys(currentMission) {
@@ -750,6 +807,32 @@
         }
     }
 
+    // 화면 전환(페이드 포함)
+    function showScreen(screenId) {
+        const screens = [
+            'screen-name','screen-start',
+            'screen-1','screen-2','screen-3','screen-4','screen-5','screen-6','screen-7','screen-8','screen-9',
+            'screen-photo','screen-end'
+        ];
+
+        screens.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (id === screenId) {
+                el.classList.remove('hidden');
+                // 다시 트리거하기 위해 클래스 리셋
+                el.classList.remove('active');
+                void el.offsetWidth; // reflow 강제
+                el.classList.add('active');
+            } else {
+                el.classList.add('hidden');
+                el.classList.remove('active');
+            }
+        });
+
+        setBackground(screenId);
+    }
+
     // 이름 입력 후 시작
     function saveNameAndStart() {
         const nameInput = document.getElementById('player-name').value.trim();
@@ -758,16 +841,12 @@
             return;
         }
         playerName = nameInput;
-        document.getElementById('screen-name').classList.add('hidden');
-        document.getElementById('screen-start').classList.remove('hidden');
-
-        // Room 1부터 도전 예정 표시
-        updateKeys(1);
+        showScreen('screen-start');
+        updateKeys(1); // Room 1 준비 상태로 표시
     }
 
     function goToMission(n) {
-        document.getElementById('screen-start').classList.add('hidden');
-        document.getElementById('screen-' + n).classList.remove('hidden');
+        showScreen('screen-' + n);
         updateKeys(n);
     }
 
@@ -787,18 +866,19 @@
         }
 
         if (isCorrect) {
-            document.getElementById('screen-' + missionNumber).classList.add('hidden');
-
             if (missionNumber === 9) {
-                // 마지막 방 → 사진 미션
                 updateKeys(9);
-                document.getElementById('screen-photo').classList.remove('hidden');
+                showScreen('screen-photo');
             } else {
                 const next = missionNumber + 1;
                 updateKeys(next);
-                document.getElementById('screen-' + next).classList.remove('hidden');
+                showScreen('screen-' + next);
             }
         } else {
+            // 오답: 입력창 흔들기
+            inputEl.classList.remove('shake');
+            void inputEl.offsetWidth; // reflow로 애니메이션 재적용
+            inputEl.classList.add('shake');
             alert('틀렸습니다. 🕵️‍♂️\n성읍민속마을 현장에서 안내판과 주변을 다시 한 번 살펴보세요!');
         }
     }
@@ -821,14 +901,15 @@
             if (!proceed) return;
         }
 
-        document.getElementById('screen-photo').classList.add('hidden');
-        document.getElementById('screen-end').classList.remove('hidden');
-
+        showScreen('screen-end');
         const endTitle = document.getElementById('end-title');
         const endName = document.getElementById('end-name');
         endTitle.textContent = playerName + ' 님, 모든 잠금장치를 해제했습니다.';
         endName.textContent = playerName;
     }
+
+    // 페이지 처음 로드 시 기본 배경 설정
+    setBackground('screen-name');
 </script>
 
 </body>
