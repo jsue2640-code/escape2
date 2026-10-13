@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>성읍 1890: 방탈출 GO</title>
+    <title>성읍 1890: 방탈출 미션</title>
     <style>
         /* ====== 전체 배경 & 기본 글꼴 ====== */
         body {
             font-family: 'Malgun Gothic', '맑은 고딕', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            /* 포스터를 배경으로 사용 (파일명: bg-escape-go.jpg) */
+            /* 원하시면 아래 url('...') 안에 배경 이미지 주소를 넣으세요 */
             background:
-                linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.9)),
-                url('bg-escape-go.jpg') center/cover no-repeat fixed;
+                radial-gradient(circle at top, #020617 0, #000000 55%, #020617 100%);
+                /* , url('여기에_배경이미지_URL') center/cover no-repeat fixed; */
             margin: 0;
             padding: 16px;
             display: flex;
@@ -23,15 +23,15 @@
 
         /* ====== 중앙 카드 (모바일 앱 느낌) ====== */
         .container {
-            background: #0b1220;
+            background: #020617;
             width: 100%;
             max-width: 480px;
-            max-height: 850px;
-            padding: 18px 16px 22px;
+            max-height: 860px;
+            padding: 16px 14px 18px;
             border-radius: 24px;
             box-shadow:
                 0 0 0 1px rgba(148, 163, 184, 0.18),
-                0 22px 40px rgba(0, 0, 0, 0.8);
+                0 22px 40px rgba(0, 0, 0, 0.9);
             color: #e5e7eb;
             position: relative;
             overflow: hidden;
@@ -44,11 +44,11 @@
             position: absolute;
             inset: -40px;
             background:
-                linear-gradient(120deg, rgba(148, 163, 184, 0.10) 1px, transparent 1px),
-                linear-gradient(210deg, rgba(15, 23, 42, 0.85) 0, rgba(15, 23, 42, 0.95) 50%, #020617 100%);
+                linear-gradient(120deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+                radial-gradient(circle at bottom, rgba(248, 113, 113, 0.18), transparent 60%);
             background-size: 22px 22px, auto;
             mix-blend-mode: soft-light;
-            opacity: 0.28;
+            opacity: 0.4;
             pointer-events: none;
         }
 
@@ -63,137 +63,94 @@
         .main-scroll {
             flex: 1;
             overflow-y: auto;
-            padding-right: 4px;
+            padding-right: 3px;
         }
 
-        .hidden { display: none !important; }
+        .hidden {
+            display: none !important;
+        }
+
+        /* ====== 상단 열쇠 진행바 ====== */
+        .progress-bar {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+        }
+
+        .key-icon {
+            font-size: 16px;
+            opacity: 0.3;
+            transition: transform 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
+        }
+
+        .key-icon.active {
+            opacity: 1;
+            filter: drop-shadow(0 0 5px #facc15);
+            transform: translateY(-1px);
+        }
+
+        .key-icon.unlocked {
+            opacity: 0.9;
+        }
+
+        .key-icon.locked {
+            opacity: 0.2;
+        }
 
         /* ====== 헤더 ====== */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .title-block h1 {
             font-size: 18px;
             margin: 0;
             color: #e5e7eb;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
         }
 
         .title-block .subtitle {
             font-size: 10px;
             color: #9ca3af;
-            margin-top: 4px;
+            margin-top: 3px;
             text-transform: uppercase;
         }
 
         .badge-game {
-            padding: 5px 10px;
+            padding: 5px 9px;
             border-radius: 999px;
-            border: 1px solid rgba(248, 250, 252, 0.15);
+            border: 1px solid rgba(248, 250, 252, 0.18);
             font-size: 10px;
             color: #f9fafb;
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            background: rgba(15, 23, 42, 0.75);
+            background: rgba(15, 23, 42, 0.9);
         }
 
         .badge-dot {
             width: 6px;
             height: 6px;
             border-radius: 999px;
-            background: #f97316;
+            background: #ef4444;
             box-shadow: 0 0 6px #f97316;
         }
 
         .divider {
             border-bottom: 1px solid rgba(148, 163, 184, 0.25);
-            margin: 8px 0 6px;
+            margin: 4px 0 4px;
         }
 
-        h2 {
-            font-size: 17px;
-            margin: 0 0 6px;
-            color: #f9fafb;
+        /* ====== 공통 텍스트 ====== */
+        .screen-block {
+            margin-top: 6px;
         }
-
-        .tagline {
-            font-size: 12px;
-            color: #9ca3af;
-            margin-bottom: 8px;
-        }
-
-        /* ====== 제주 아이템 바 ====== */
-        .item-bar {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(55, 65, 81, 0.95));
-            border-radius: 14px;
-            padding: 8px 10px 10px;
-            border: 1px solid rgba(148, 163, 184, 0.6);
-            margin-bottom: 10px;
-        }
-
-        .item-title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-
-        .item-title {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: #9ca3af;
-        }
-
-        .item-count {
-            font-size: 11px;
-            color: #e5e7eb;
-        }
-
-        .item-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-        }
-
-        .item-chip {
-            padding: 3px 7px;
-            border-radius: 999px;
-            font-size: 11px;
-            border: 1px solid rgba(148, 163, 184, 0.5);
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .item-chip.locked {
-            background: rgba(15, 23, 42, 0.9);
-            color: #6b7280;
-        }
-
-        .item-chip.unlocked {
-            background: radial-gradient(circle at top, #f97316, #facc15);
-            color: #111827;
-            border-color: rgba(248, 250, 252, 0.85);
-            font-weight: 600;
-        }
-
-        .item-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 999px;
-            background: currentColor;
-        }
-
-        /* ====== 내용 공통 ====== */
-        .screen-block { margin-top: 4px; }
 
         .upper-label {
             font-size: 10px;
@@ -203,59 +160,10 @@
             margin-bottom: 6px;
         }
 
-        .stage-label {
-            font-size: 10px;
-            color: #facc15;
-            font-weight: 600;
-            margin-bottom: 4px;
-            text-align: left;
-            letter-spacing: 0.1em;
-        }
-
-        .mission-meta {
-            font-size: 10px;
+        .tagline {
+            font-size: 12px;
             color: #9ca3af;
-            margin-bottom: 6px;
-            text-align: left;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-
-        .story {
-            background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.18), rgba(17, 24, 39, 0.98));
-            border-radius: 12px;
-            padding: 12px;
-            font-size: 12.5px;
-            line-height: 1.6;
-            color: #e5e7eb;
-            border: 1px solid rgba(148, 163, 184, 0.4);
-            margin-bottom: 12px;
-        }
-
-        .story strong { color: #facc15; }
-        .story em { color: #93c5fd; }
-
-        .mission-desc {
-            text-align: left;
-            line-height: 1.7;
-            font-size: 13px;
-            margin-bottom: 10px;
-            color: #e5e7eb;
-        }
-
-        .hint {
-            font-size: 11px;
-            color: #9ca3af;
-            margin-top: 2px;
-            margin-bottom: 4px;
-        }
-
-        .name-label {
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: #e5e7eb;
-            text-align: left;
-            font-size: 12.5px;
+            margin-bottom: 8px;
         }
 
         .small {
@@ -263,28 +171,77 @@
             color: #9ca3af;
         }
 
-        .timer-info {
+        h2 {
+            font-size: 17px;
+            margin: 0 0 6px;
+            color: #f9fafb;
+        }
+
+        /* ====== 방탈출 느낌의 미션 카드 ====== */
+        .mission-panel {
+            background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 1));
+            border-radius: 16px;
+            border: 1px solid rgba(248, 250, 252, 0.06);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.9);
+            padding: 16px 14px 14px;
+            margin-top: 6px;
+            position: relative;
+        }
+
+        .mission-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            border: 1px solid rgba(248, 113, 113, 0.18);
+            pointer-events: none;
+        }
+
+        .mission-label {
+            color: #f97373;
             font-size: 11px;
-            color: #f97316;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
             margin-bottom: 6px;
-            font-weight: 600;
-            text-align: right;
         }
 
-        /* ====== 이미지 패널 (에너지 코어 UI) ====== */
-        .hero-panel {
-            width: 100%;
-            max-width: 360px;
-            margin: 6px auto 12px;
-            border-radius: 14px;
-            overflow: hidden;
-            border: 1px solid rgba(148, 163, 184, 0.5);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+        .mission-title {
+            font-size: 19px;
+            margin: 0 0 8px;
+            color: #f9fafb;
         }
 
-        .hero-panel img {
-            width: 100%;
-            display: block;
+        .mission-quote {
+            font-size: 12px;
+            color: #fca5a5;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .mission-text {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #e5e7eb;
+            margin-bottom: 10px;
+        }
+
+        .mission-warning {
+            font-size: 11px;
+            color: #f87171;
+            margin-bottom: 6px;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: #facc15;
+            margin-top: 2px;
+            margin-bottom: 6px;
+        }
+
+        .mission-note {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 4px;
         }
 
         /* ====== 입력창 & 버튼 ====== */
@@ -293,9 +250,9 @@
             padding: 9px 10px;
             margin-bottom: 6px;
             border-radius: 9px;
-            border: 1px solid rgba(148, 163, 184, 0.65);
+            border: 1px solid rgba(148, 163, 184, 0.7);
             font-size: 14px;
-            background: rgba(15, 23, 42, 0.92);
+            background: rgba(15, 23, 42, 0.96);
             color: #e5e7eb;
             box-sizing: border-box;
         }
@@ -311,8 +268,8 @@
         }
 
         button {
-            background: linear-gradient(135deg, #f97316, #facc15);
-            color: #111827;
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            color: #f9fafb;
             border: none;
             padding: 10px 18px;
             border-radius: 999px;
@@ -321,16 +278,16 @@
             cursor: pointer;
             width: 100%;
             transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, filter 0.08s;
-            box-shadow: 0 10px 20px rgba(248, 250, 252, 0.18);
+            box-shadow: 0 12px 22px rgba(239, 68, 68, 0.45);
             text-transform: uppercase;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.08em;
             margin-top: 4px;
         }
 
         button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 14px 26px rgba(248, 250, 252, 0.3);
-            filter: brightness(1.03);
+            box-shadow: 0 16px 26px rgba(248, 113, 113, 0.65);
+            filter: brightness(1.04);
         }
 
         button:active {
@@ -362,7 +319,7 @@
         .code-box {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
             font-size: 12px;
-            background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.4), rgba(15, 23, 42, 0.96));
+            background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.4), rgba(15, 23, 42, 0.98));
             color: #e5e7eb;
             padding: 10px 12px;
             border-radius: 10px;
@@ -371,19 +328,20 @@
             border: 1px solid rgba(148, 163, 184, 0.6);
         }
 
-        .highlight { color: #facc15; }
+        .highlight {
+            color: #facc15;
+        }
 
         @media (max-width: 400px) {
             .container {
-                padding: 14px 12px 18px;
+                padding: 14px 10px 16px;
                 border-radius: 18px;
             }
             .title-block h1 {
                 font-size: 16px;
             }
-            .item-chip {
-                font-size: 10px;
-                padding: 3px 6px;
+            .mission-title {
+                font-size: 18px;
             }
         }
     </style>
@@ -392,285 +350,376 @@
 
 <div class="container">
   <div class="container-inner">
-    <!-- 상단 헤더 -->
+
+    <!-- 상단 열쇠 진행바 -->
+    <div class="progress-bar">
+        <div id="key-1" class="key-icon locked">🔒</div>
+        <div id="key-2" class="key-icon locked">🔒</div>
+        <div id="key-3" class="key-icon locked">🔒</div>
+        <div id="key-4" class="key-icon locked">🔒</div>
+        <div id="key-5" class="key-icon locked">🔒</div>
+        <div id="key-6" class="key-icon locked">🔒</div>
+        <div id="key-7" class="key-icon locked">🔒</div>
+        <div id="key-8" class="key-icon locked">🔒</div>
+        <div id="key-9" class="key-icon locked">🔒</div>
+    </div>
+
+    <!-- 헤더 -->
     <div class="header">
         <div class="title-block">
-            <h1>성읍 1890: 방탈출 GO</h1>
-            <div class="subtitle">Hidden Code · Jeju Escape Mission</div>
+            <h1>성읍 1890: 방탈출 미션</h1>
+            <div class="subtitle">Seongeup Folk Village · Field Escape</div>
         </div>
         <div class="badge-game">
-            <span class="badge-dot"></span> LIVE MISSION
+            <span class="badge-dot"></span> ACTIVE CASE
         </div>
     </div>
     <div class="divider"></div>
 
-    <!-- 제주 아이템 바 -->
-    <div id="item-bar" class="item-bar hidden">
-        <div class="item-title-row">
-            <div class="item-title">JEJU ITEM INVENTORY</div>
-            <div class="item-count" id="item-count-text">0 / 9 획득</div>
-        </div>
-        <div class="item-list">
-            <div id="item-1" class="item-chip locked" onclick="showItemInfo(1)"><span class="item-dot"></span>메밀</div>
-            <div id="item-2" class="item-chip locked" onclick="showItemInfo(2)"><span class="item-dot"></span>한라봉</div>
-            <div id="item-3" class="item-chip locked" onclick="showItemInfo(3)"><span class="item-dot"></span>밭담</div>
-            <div id="item-4" class="item-chip locked" onclick="showItemInfo(4)"><span class="item-dot"></span>돌하르방</div>
-            <div id="item-5" class="item-chip locked" onclick="showItemInfo(5)"><span class="item-dot"></span>해녀</div>
-            <div id="item-6" class="item-chip locked" onclick="showItemInfo(6)"><span class="item-dot"></span>물허벅</div>
-            <div id="item-7" class="item-chip locked" onclick="showItemInfo(7)"><span class="item-dot"></span>초가지붕</div>
-            <div id="item-8" class="item-chip locked" onclick="showItemInfo(8)"><span class="item-dot"></span>오름</div>
-            <div id="item-9" class="item-chip locked" onclick="showItemInfo(9)"><span class="item-dot"></span>바람</div>
-        </div>
-    </div>
-
     <!-- 스크롤 영역 -->
     <div class="main-scroll">
 
-        <!-- 0. 이름 입력 화면 -->
+        <!-- 이름 입력 화면 -->
         <div id="screen-name" class="screen-block">
-            <div class="upper-label">CASE FILE · ENTRY</div>
-            <h2>탐정 신원 등록</h2>
-            <p class="tagline">숨겨진 비밀 속 역경을 이겨내고 탈출하라!</p>
+            <div class="upper-label">ENTRY LOG</div>
+            <h2>성읍 시간탐험단 등록</h2>
+            <p class="tagline">
+                이 게임은 성읍민속마을을 <strong>직접 걸어 다니며</strong> 푸는 현장형 방탈출입니다.
+            </p>
+            <div class="mission-panel">
+                <div class="mission-label">PRE-BRIEFING</div>
+                <h3 class="mission-title" style="margin:0 0 8px;font-size:18px;">1890년, 사라진 기록의 수호자</h3>
+                <p class="mission-text">
+                    1890년, 성읍마을을 지키던 한 사람이<br>
+                    마을의 비밀을 여러 개의 암호로 나누어<br>
+                    성읍 곳곳에 숨겨 두었습니다.<br><br>
+                    그는 마지막 기록에 이렇게 남겼습니다.<br>
+                    <span class="highlight">“나의 비밀을 찾으려면, 먼저 마을을 읽어라.”</span><br><br>
+                    여러분은 오늘 <strong>성읍 시간탐험단</strong>이 되어,<br>
+                    민속마을을 직접 걸으며 안내판과 집, 나무, 성곽을 읽고<br>
+                    9개의 잠금장치를 해제해야 합니다.
+                </p>
+                <p class="mission-warning">
+                    🩸 규칙: 모든 정답은 <strong>성읍민속마을 현장</strong>에 있습니다. 검색·추측 금지.
+                </p>
+                <p class="small" style="margin-bottom:6px;">
+                    ※ 수학여행/현장체험 중에만 사용하세요. 마을을 충분히 둘러보는 것이 가장 중요합니다.
+                </p>
 
-            <div class="story">
-                <strong>1890년, 성읍마을을 지키던 한 사람</strong>이<br>
-                마을의 비밀을 여러 개의 암호로 나누어<br>
-                성읍 곳곳에 숨겨 두었습니다.<br><br>
-                그가 남긴 마지막 문장.<br><br>
-                <em>“나의 비밀을 찾으려면, 먼저 마을을 읽어라.”</em><br><br>
-                지금, 암호가 다시 깨어났습니다.<br>
-                제한 시간은 <strong>60분</strong>.<br><br>
-                방을 하나씩 탈출할 때마다<br>
-                <strong>제주 아이템(메밀, 한라봉, 밭담 등)</strong>을 모아<br>
-                에너지 코어를 채워야 합니다.
+                <label class="small" style="display:block;margin-bottom:4px;">탐험단원 이름</label>
+                <input type="text" id="player-name" placeholder="실제 이름을 입력하세요">
+                <p class="small">
+                    ※ 마지막 탈출 기록에 그대로 표시됩니다.
+                </p>
+                <button onclick="saveNameAndStart()">탐험단 등록 & 브리핑 시작</button>
             </div>
-
-            <div class="name-label">탐정 이름</div>
-            <input type="text" id="player-name" placeholder="예: 홍길동">
-            <div class="small">※ 실제 이름을 입력해 주세요. 마지막 탈출 기록에 표시됩니다.</div>
-            <button onclick="saveNameAndStart()">미션 시작</button>
         </div>
 
-        <!-- 1. 브리핑 화면 -->
+        <!-- 브리핑 화면 -->
         <div id="screen-start" class="hidden screen-block">
             <div class="upper-label">BRIEFING ROOM</div>
-            <h2>성읍 1890: 미션 설명</h2>
-            <div class="timer-info">⏱ 제한 시간 60분 · 성읍 전역 = 게임 필드</div>
-            <div class="story">
-                이 게임은 <strong>9개의 방(Room)</strong>으로 이루어져 있습니다.<br><br>
-                각 방의 암호를 풀고 탈출할 때마다<br>
-                <span class="highlight">제주 아이템 1개</span>를 획득합니다.<br><br>
-                - 메밀 · 한라봉 · 밭담 · 돌하르방 · 해녀<br>
-                - 물허벅 · 초가지붕 · 오름 · 바람<br><br>
-                9개의 방을 모두 탈출하여<br>
-                <strong>제주 아이템 9개를 전부 모으면</strong><br>
-                최종 에너지 코어가 열리고,<br>
-                성읍 1890 방탈출이 완전히 완료됩니다.
+            <h2>현장 방탈출 규칙</h2>
+            <p class="tagline">
+                성읍민속마을 전체가 당신의 게임 필드입니다.
+            </p>
+            <div class="mission-panel">
+                <div class="mission-label">MISSION RULES</div>
+                <p class="mission-text">
+                    1. 이 게임은 <strong>웹 화면을 보는 것</strong>이 아니라,<br>
+                    <strong>성읍민속마을을 눈으로 보고, 몸으로 느끼는 것</strong>이 목적입니다.<br><br>
+                    2. 각 미션 화면에는<br>
+                    - 가야 할 <strong>위치</strong><br>
+                    - 읽어야 할 <strong>안내판/풍경</strong><br>
+                    - 풀어야 할 <strong>질문</strong><br>
+                    이 적혀 있습니다.<br><br>
+                    3. 정답은 모두 <strong>현장</strong>에 있습니다.<br>
+                    안내판과 주변을 직접 보고, 친구들과 같이 이야기해 보세요.<br><br>
+                    4. 9개의 미션을 모두 해결하면,<br>
+                    마지막 <strong>팽나무 앞 사진 미션</strong>으로 게임이 마무리됩니다.
+                </p>
+                <p class="mission-warning">
+                    🩸 준비가 되었다면 Room 1으로 이동해 첫 번째 암호를 해제하세요.
+                </p>
+                <button onclick="goToMission(1)">Room 1 시작</button>
             </div>
-
-            <!-- 에너지 코어 패널 이미지 (파일명: panel-energy-core.jpg) -->
-            <div class="hero-panel">
-                <img src="panel-energy-core.jpg" alt="에너지 코어 시스템 패널">
-            </div>
-
-            <button onclick="goToMission(1)">Room 1 입장</button>
         </div>
 
         <!-- Room 1 -->
         <div id="screen-1" class="hidden screen-block">
-            <div class="stage-label">ROOM 1 · 비밀 그림 코드</div>
-            <h2>미션 1. 사라진 기록의 제목</h2>
-            <div class="mission-meta">위치: 활쏘기 체험장 근처 · 보상 아이템: 메밀</div>
-            <div class="mission-desc">
-                제주목사 <strong>이형상</strong>은 제주를 순력하며<br>
-                화공 <strong>김남길</strong>에게 제주 사람들의 생활과 풍속을<br>
-                그림으로 남기게 했습니다.<br><br>
-                이 그림의 제목이 Room 1의 잠금코드입니다.<br><br>
-                이 그림의 이름은 무엇일까요?<br><br>
-                <span class="small">
-                    * 순력: 지방관이 고을을 돌며 행정·군사를 점검하던 제도
-                </span>
-            </div>
-            <p class="hint">CLUE) 활쏘는 체험장 앞 안내판을 확인해 보세요.</p>
-            <input type="text" id="answer-1" placeholder="그림의 제목을 한글로 적으세요">
-            <button onclick="checkAnswer(1, ['탐라순력도'])">Room 1 LOCK 해제</button>
+          <div class="mission-panel">
+            <div class="mission-label">MISSION 1 / 9 · 옛 제주 기록실</div>
+            <h2 class="mission-title">탐라를 그린 비밀 지도</h2>
+            <p class="mission-quote">
+              "지도는 권력이다. 이 섬을 이해하는 자만이, 이 섬을 다스릴 수 있다."
+            </p>
+            <p class="mission-text">
+              성읍민속마을 안의 <strong>활쏘기 체험장 근처</strong>로 이동하세요.<br>
+              그 앞 안내판에는 조선시대 제주목사 <strong>이형상</strong>이<br>
+              화공 <strong>김남길</strong>에게 제주도의 풍속과 생활 모습을<br>
+              그림으로 남기게 한 이야기가 적혀 있습니다.<br><br>
+              그 그림의 제목이 바로 첫 번째 잠금장치의 암호입니다.
+            </p>
+            <p class="mission-warning">
+              🩸 현장 단서 없이 풀지 마세요. 안내판의 제목을 직접 읽고 적어야 합니다.
+            </p>
+            <p class="hint">
+              힌트) 활쏘는 체험장 앞 안내판 위쪽 큰 글자를 확인해 보세요.
+            </p>
+
+            <input type="text" id="answer-1" placeholder="그림의 이름을 정확히 적으세요 (한글)">
+            <button onclick="checkAnswer(1, ['탐라순력도'])">첫 번째 잠금 해제</button>
+
+            <p class="mission-note">
+              * 순력: 조선시대 지방관이 자신이 다스리는 고을을 돌며 행정과 군사 등 여러 사항을 점검하던 제도
+            </p>
+          </div>
         </div>
 
         <!-- Room 2 -->
         <div id="screen-2" class="hidden screen-block">
-            <div class="stage-label">ROOM 2 · 옛 지명 비밀번호</div>
-            <h2>미션 2. 사라진 고을의 이름</h2>
-            <div class="mission-meta">위치: 성읍마을 안내도 주변 · 보상 아이템: 한라봉</div>
-            <div class="mission-desc">
-                조선시대 제주도는 <strong>3개의 고을</strong>로 나뉘어 있었습니다.<br>
-                성읍마을이 속해 있던 고을의 이름이<br>
-                Room 2의 비밀번호입니다.<br><br>
-                이 고을의 이름은 무엇일까요?
-            </div>
-            <p class="hint">CLUE) 정답은 ‘OO현’ 형태입니다.</p>
+          <div class="mission-panel">
+            <div class="mission-label">MISSION 2 / 9 · 세 갈래의 고을</div>
+            <h2 class="mission-title">성읍이 속한 옛 이름</h2>
+            <p class="mission-quote">
+              "섬을 나누는 이름은, 사람들을 나누는 기준이 된다."
+            </p>
+            <p class="mission-text">
+              성읍민속마을 전체를 보여주는 <strong>마을 안내도</strong> 근처로 이동하세요.<br><br>
+              조선시대 제주도는 <strong>3개의 고을</strong>로 나뉘어 있었습니다.<br>
+              그 가운데 성읍마을이 속해 있던 고을의 이름이<br>
+              두 번째 잠금장치의 비밀번호입니다.
+            </p>
+            <p class="mission-warning">
+              🩸 안내도와 설명판에서 ‘○○현’으로 끝나는 지명을 찾아보세요.
+            </p>
+            <p class="hint">
+              힌트) ‘정의’라는 글자를 눈여겨보세요.
+            </p>
+
             <input type="text" id="answer-2" placeholder="예: ○○현">
-            <button onclick="checkAnswer(2, ['정의현'])">Room 2 LOCK 해제</button>
+            <button onclick="checkAnswer(2, ['정의현'])">두 번째 잠금 해제</button>
+          </div>
         </div>
 
         <!-- Room 3 -->
         <div id="screen-3" class="hidden screen-block">
-            <div class="stage-label">ROOM 3 · 학문의 집 코드</div>
-            <h2>미션 3. 학문의 집, 암호의 집</h2>
-            <div class="mission-meta">위치: 대성전·명륜당 일대 · 보상 아이템: 밭담</div>
-            <div class="mission-desc">
-                <strong>대성전</strong>과 학문 공간 <strong>명륜당</strong>이<br>
-                나란히 서 있는 이곳은<br>
-                옛날 학생들이 공부하던 곳입니다.<br><br>
-                이곳의 이름이 Room 3의 암호입니다.<br>
-                무엇이라고 부를까요?
-            </div>
-            <p class="hint">CLUE) 정답은 ‘OOO교’ 형태입니다.</p>
+          <div class="mission-panel">
+            <div class="mission-label">MISSION 3 / 9 · 학문의 집</div>
+            <h2 class="mission-title">공부하던 사람들의 공간</h2>
+            <p class="mission-quote">
+              "이 마을의 내일을 바꾸던 글자는, 어디에서 쓰였을까?"
+            </p>
+            <p class="mission-text">
+              마을 안쪽으로 걸어가 <strong>대성전</strong>과<br>
+              학문 공간인 <strong>명륜당</strong>이 나란히 있는 곳을 찾아가세요.<br><br>
+              이곳은 예전에 아이들과 선비들이 공부하던 곳입니다.<br>
+              이 공간 전체의 이름이 세 번째 잠금장치의 암호입니다.
+            </p>
+            <p class="mission-warning">
+              🩸 ‘○○○교’로 끝나는 이름을 안내판에서 직접 확인해 적어 보세요.
+            </p>
+            <p class="hint">
+              힌트) 정의(定義)라는 이름이 다시 등장합니다.
+            </p>
+
             <input type="text" id="answer-3" placeholder="예: ○○○교">
-            <button onclick="checkAnswer(3, ['정의향교'])">Room 3 LOCK 해제</button>
+            <button onclick="checkAnswer(3, ['정의향교'])">세 번째 잠금 해제</button>
+          </div>
         </div>
 
         <!-- Room 4 -->
         <div id="screen-4" class="hidden screen-block">
-            <div class="stage-label">ROOM 4 · 수호자의 얼굴</div>
-            <h2>미션 4. 성문 앞의 수호자</h2>
-            <div class="mission-meta">위치: 성문 근처 · 보상 아이템: 돌하르방</div>
-            <div class="mission-desc">
-                성읍마을 성문 앞에는 마을을 지키는<br>
-                수호신 같은 존재가 서 있습니다.<br><br>
-                이 돌상의 이름이 Room 4의 암호입니다.<br>
-                무엇일까요?
-            </div>
+          <div class="mission-panel">
+            <div class="mission-label">MISSION 4 / 9 · 돌의 수호자</div>
+            <h2 class="mission-title">성문 앞의 눈</h2>
+            <p class="mission-quote">
+              "누군가는 늘, 문 앞에서 마을을 지켜보고 있었다."
+            </p>
+            <p class="mission-text">
+              성읍마을의 <strong>성문 근처</strong>로 이동하세요.<br><br>
+              성문 앞에는 마을을 지켜주는<br>
+              수호신 같은 돌상이 서 있습니다.<br><br>
+              이 돌상의 이름이 네 번째 잠금장치의 암호입니다.
+            </p>
+            <p class="mission-warning">
+              🩸 표정, 모양, 안내판을 모두 관찰해 보세요.
+            </p>
+
             <input type="text" id="answer-4" placeholder="예: ○○○○">
-            <button onclick="checkAnswer(4, ['돌하르방'])">Room 4 LOCK 해제</button>
+            <button onclick="checkAnswer(4, ['돌하르방'])">네 번째 잠금 해제</button>
+          </div>
         </div>
 
         <!-- Room 5 -->
         <div id="screen-5" class="hidden screen-block">
-            <div class="stage-label">ROOM 5 · 침입자 코드</div>
-            <h2>미션 5. 성곽이 막으려 한 것</h2>
-            <div class="mission-meta">위치: 성곽·성문 주변 · 보상 아이템: 해녀</div>
-            <div class="mission-desc">
-                남문 같은 성문과 성곽은,<br>
-                바다를 건너 쳐들어오던 (  ㄱ  )과 같은 외적을<br>
-                막기 위해 쌓았습니다.<br><br>
-                ( ㄱ )에 들어갈 이 외적의 이름은 무엇일까요?
-            </div>
+          <div class="mission-panel">
+            <div class="mission-label">MISSION 5 / 9 · 침입자의 그림자</div>
+            <h2 class="mission-title">성을 쌓은 이유</h2>
+            <p class="mission-quote">
+              "높은 성벽 뒤에는, 보이지 않는 두려움이 숨어 있다."
+            </p>
+            <p class="mission-text">
+              성곽과 성문이 잘 보이는 곳으로 이동하세요.<br><br>
+              남문 같은 성문과 두꺼운 성곽은,<br>
+              바다를 건너 쳐들어오던 (  ㄱ  )과 같은 외적을<br>
+              막기 위해 쌓았습니다.<br><br>
+              ( ㄱ )에 들어갈 이 외적의 이름이 다섯 번째 암호입니다.
+            </p>
+            <p class="mission-warning">
+              🩸 안내판 내용과 그림을 통해, 누가 이 섬을 위협했는지 확인해 보세요.
+            </p>
+
             <input type="text" id="answer-5" placeholder="정답을 입력하세요">
-            <button onclick="checkAnswer(5, ['왜구'])">Room 5 LOCK 해제</button>
+            <button onclick="checkAnswer(5, ['왜구'])">다섯 번째 잠금 해제</button>
+          </div>
         </div>
 
         <!-- Room 6 -->
         <div id="screen-6" class="hidden screen-block">
-            <div class="stage-label">ROOM 6 · 숨겨진 창고</div>
-            <h2>미션 6. 방 안의 작은 창고</h2>
-            <div class="mission-meta">위치: 전통가옥 내부 · 보상 아이템: 물허벅</div>
-            <div class="mission-desc">
-                제주에서는 살림살이와 곡식을 보관하는<br>
-                작은 창고를 <strong>방 안에</strong> 두기도 했습니다.<br><br>
-                이 작은 창고의 이름은 무엇일까요?
-            </div>
-            <p class="hint">CLUE) 오래 걸었더니, 배고팡.</p>
+          <div class="mission-panel">
+            <div class="mission-label">MISSION 6 / 9 · 방 속의 방</div>
+            <h2 class="mission-title">살림을 지키는 작은 창고</h2>
+            <p class="mission-quote">
+              "밥과 살림을 지키는 곳이, 진짜 비밀 창고다."
+            </p>
+            <p class="mission-text">
+              전통가옥 안으로 들어가, 방 안을 자세히 살펴보세요.<br><br>
+              제주에서는 살림살이, 음식재료, 곡식들을 보관하는<br>
+              작은 창고를 <strong>방 안에</strong> 두기도 했습니다.<br><br>
+              이 작은 창고의 이름이 여섯 번째 암호입니다.
+            </p>
+            <p class="hint">
+              힌트) “오래 걸었더니, 배고팡.” 이라는 말장난을 떠올려 보세요.
+            </p>
+
             <input type="text" id="answer-6" placeholder="정답을 입력하세요">
-            <button onclick="checkAnswer(6, ['고팡'])">Room 6 LOCK 해제</button>
+            <button onclick="checkAnswer(6, ['고팡'])">여섯 번째 잠금 해제</button>
+          </div>
         </div>
 
         <!-- Room 7 -->
         <div id="screen-7" class="hidden screen-block">
-            <div class="stage-label">ROOM 7 · 지붕 패턴</div>
-            <h2>미션 7. 볏집 지붕의 비밀</h2>
-            <div class="mission-meta">위치: 전통 초가 마을 · 보상 아이템: 초가지붕</div>
-            <div class="mission-desc">
-                성읍마을에서 볼 수 있는,<br>
-                볏집으로 지붕을 이은 제주의 전통 집.<br><br>
-                이 집을 무엇이라고 부를까요?
-            </div>
+          <div class="mission-panel">
+            <div class="mission-label">MISSION 7 / 9 · 볏집 지붕</div>
+            <h2 class="mission-title">바람과 함께 사는 집</h2>
+            <p class="mission-quote">
+              "지붕을 보면, 그 땅의 바람과 비를 알 수 있다."
+            </p>
+            <p class="mission-text">
+              성읍마을 곳곳의 전통 집들을 살펴보세요.<br><br>
+              볏집으로 지붕을 이은 제주의 전통 집은<br>
+              강한 바람과 비를 견디기 위해 만들어졌습니다.<br><br>
+              이 집을 무엇이라고 부를까요?<br>
+              그 이름이 일곱 번째 암호입니다.
+            </p>
+
             <input type="text" id="answer-7" placeholder="정답을 입력하세요">
-            <button onclick="checkAnswer(7, ['초가집'])">Room 7 LOCK 해제</button>
+            <button onclick="checkAnswer(7, ['초가집'])">일곱 번째 잠금 해제</button>
+          </div>
         </div>
 
         <!-- Room 8 -->
         <div id="screen-8" class="hidden screen-block">
-            <div class="stage-label">ROOM 8 · 방향 키</div>
-            <h2>미션 8. 금고의 방향키</h2>
-            <div class="mission-meta">위치: 입구 성문 주변 · 보상 아이템: 오름</div>
-            <div class="mission-desc">
-                수호자가 남긴 마지막 금고는,<br>
-                마을에 들어올 때 처음 통과한 문의 방향을<br>
-                비밀번호로 사용합니다.<br><br>
-                우리가 들어온 입구는 무슨 문이었을까요?<br>
-                <strong>남문 · 서문 · 동문</strong> 중에서 고르세요.
-            </div>
+          <div class="mission-panel">
+            <div class="mission-label">MISSION 8 / 9 · 입구의 방향</div>
+            <h2 class="mission-title">우리가 지나온 문</h2>
+            <p class="mission-quote">
+              "처음 들어온 문을 기억하는 자만이, 길을 잃지 않는다."
+            </p>
+            <p class="mission-text">
+              이제 다시, 우리가 처음 마을에 들어왔던 순간을 떠올려 보세요.<br><br>
+              성읍민속마을의 입구 성문 쪽으로 돌아가,<br>
+              안내판과 지도를 함께 보며 확인합니다.<br><br>
+              우리가 들어온 입구는 무슨 문이었을까요?<br>
+              <strong>남문, 서문, 동문</strong> 중에서 고르세요.
+            </p>
+
             <input type="text" id="answer-8" placeholder="예: 남문 / 서문 / 동문">
-            <button onclick="checkAnswer(8, ['남문'])">Room 8 LOCK 해제</button>
+            <button onclick="checkAnswer(8, ['남문'])">여덟 번째 잠금 해제</button>
+          </div>
         </div>
 
         <!-- Room 9 -->
         <div id="screen-9" class="hidden screen-block">
-            <div class="stage-label">ROOM 9 · 최후의 단서 & 나무</div>
-            <h2>미션 9. 수호자의 나무</h2>
-            <div class="mission-meta">위치: 정의현 객사 근처 · 보상 아이템: 바람</div>
-            <div class="mission-desc">
-                정의현 객사 근처에는<br>
-                천연기념물로 지정된 아주 오래된 나무가 있습니다.<br><br>
-                바람에 강해서 마을 어귀에 정자나무로 많이 심었지요.<br><br>
-                이 나무의 이름은 무엇일까요?
-            </div>
-            <p class="hint">CLUE) O나무</p>
+          <div class="mission-panel">
+            <div class="mission-label">MISSION 9 / 9 · 마을의 나무</div>
+            <h2 class="mission-title">수호자의 그늘</h2>
+            <p class="mission-quote">
+              "사람은 떠나도, 나무는 자리를 지킨다."
+            </p>
+            <p class="mission-text">
+              마지막으로, <strong>정의현 객사</strong> 근처로 이동하세요.<br><br>
+              그 주변에는 천연기념물로 지정된<br>
+              아주 오래된 나무가 서 있습니다.<br><br>
+              바람에 강해서 예전부터 제주 마을 어귀의 정자나무로<br>
+              많이 심어지던 나무입니다.<br><br>
+              이 나무의 이름이 아홉 번째 암호입니다.
+            </p>
+            <p class="hint">
+              힌트) 안내판에서 ‘○나무’로 끝나는 이름을 찾아보세요.
+            </p>
+
             <input type="text" id="answer-9" placeholder="정답을 입력하세요">
-            <button onclick="checkAnswer(9, ['팽나무'])">Room 9 LOCK 해제</button>
+            <button onclick="checkAnswer(9, ['팽나무'])">아홉 번째 잠금 해제</button>
+          </div>
         </div>
 
         <!-- 사진 미션 -->
         <div id="screen-photo" class="hidden screen-block">
-            <div class="badge">📷 PHOTO EVIDENCE</div>
-            <h2>사진 기록: 수호자와의 약속</h2>
-            <div class="mission-meta">위치: 팽나무 아래</div>
-            <div class="mission-desc">
-                모든 방의 암호를 해독하고<br>
-                제주 아이템 9개를 전부 모았습니다.<br><br>
-                이제 당신이 이 마을의 새로운 수호자가 되었다는<br>
-                <strong>증거 사진</strong>만 남기면 됩니다.<br><br>
-                <strong>팽나무 아래에서</strong><br>
-                셀카나 기념사진을 찍어 보세요.
-            </div>
-            <p class="small">
-                ※ 사진은 이 기기 안에서만 보이며,<br>
-                서버에는 저장되지 않습니다.<br>
-                선생님께는 화면을 보여주거나 따로 캡처해서 제출하세요.
-            </p>
+            <div class="mission-panel">
+                <div class="mission-label">FINAL MISSION · PHOTO LOG</div>
+                <h2 class="mission-title">팽나무 아래의 약속</h2>
+                <p class="mission-quote">
+                  "오늘 이 순간, 너도 성읍 사람이다."
+                </p>
+                <p class="mission-text">
+                    모든 암호가 해제되었습니다.<br>
+                    이제 마지막으로, 오늘의 성읍 탐험을<br>
+                    한 장의 사진으로 남길 시간입니다.<br><br>
+                    <strong>팽나무 아래</strong>에 서서<br>
+                    혼자 또는 친구들과 함께 사진을 찍어 보세요.<br>
+                    이 사진은 여러분이 오늘 하루<br>
+                    성읍의 이야기를 직접 읽어 낸 증거가 됩니다.
+                </p>
+                <p class="small">
+                    ※ 이 사진은 이 기기 안에서만 보이며 서버에는 저장되지 않습니다.<br>
+                    선생님께는 화면을 보여주거나, 따로 캡처해서 제출하세요.
+                </p>
 
-            <input type="file" accept="image/*" capture="environment" id="photo-input" onchange="previewPhoto(event)">
-            <div class="small">‘카메라로 촬영’ 또는 앨범에서 사진을 선택해 주세요.</div>
-            <img id="photo-preview" class="photo-preview" alt="사진 미리보기">
-            <button onclick="finishGame()">최종 에너지 코어 오픈</button>
+                <input type="file" accept="image/*" capture="environment" id="photo-input" onchange="previewPhoto(event)">
+                <div class="small">‘카메라로 촬영’ 또는 앨범에서 사진을 선택해 주세요.</div>
+                <img id="photo-preview" class="photo-preview" alt="사진 미리보기">
+
+                <button onclick="finishGame()">최종 기록 작성</button>
+            </div>
         </div>
 
         <!-- 최종 탈출 화면 -->
         <div id="screen-end" class="hidden screen-block">
-            <div class="upper-label">FINAL REPORT</div>
-            <h2>최종 보고서: 방탈출 GO 완료</h2>
-            <p class="tagline">모든 Room 탈출 + 제주 아이템 풀세트 획득</p>
+            <div class="mission-panel">
+                <div class="mission-label">CASE CLOSED</div>
+                <h2 class="mission-title">성읍 1890: 탈출 완료</h2>
+                <p class="mission-text">
+                    <span id="end-title" class="highlight"></span><br><br>
+                    당신은 9개의 잠금장치를 모두 해제하고,<br>
+                    성읍민속마을 곳곳을 직접 걸으며<br>
+                    제주의 옛 터와 옛 사람들의 생활문화를 읽어 냈습니다.<br><br>
+                    오늘 이 기록은,<br>
+                    <strong>당신이 이 마을을 진짜로 한 번 살아 본 날</strong>로 남을 것입니다.
+                </p>
 
-            <div class="story">
-                <span id="end-title" class="highlight"></span><br><br>
-                당신은 9개의 방을 모두 탈출하고,<br>
-                메밀부터 바람까지<br>
-                <strong>제주 아이템 9개를 전부 수집</strong>했습니다.<br><br>
-                이제 성읍 1890의 비밀은<br>
-                안전하게 지켜졌습니다.
+                <div class="code-box">
+                    ▶ Game: 성읍 1890: 방탈출 미션<br>
+                    ▶ Player: <span id="end-name" class="highlight"></span><br>
+                    ▶ Status: ALL 9 LOCKS RELEASED<br>
+                    ▶ Evidence: 팽나무 아래의 사진
+                </div>
+
+                <p class="small" style="margin-top:10px;">
+                    이 화면을 <strong>캡처</strong>해서 선생님께 제출하세요.<br>
+                    (이름과 “ALL 9 LOCKS RELEASED” 문구가 보이도록 찍어 주세요.)
+                </p>
             </div>
-
-            <div class="code-box">
-                ▶ Game: 성읍 1890: 방탈출 GO<br>
-                ▶ Player: <span id="end-name" class="highlight"></span><br>
-                ▶ Item Status: 9 / 9 JEJU ITEMS COLLECTED<br>
-                ▶ Result: ✅ ESCAPE SUCCESS
-            </div>
-
-            <p class="hint" style="margin-top: 10px;">
-                이 화면을 <strong>캡처</strong>해서 선생님께 제출하세요.<br>
-                (이름과 아이템 상태가 보이도록 찍어 주세요.)
-            </p>
         </div>
 
     </div> <!-- main-scroll 끝 -->
@@ -678,51 +727,28 @@
 </div>
 
 <script>
-    // 플레이어 이름
     let playerName = '';
 
-    // 아이템 획득 여부 (index 1~9 사용)
-    let items = [null, false, false, false, false, false, false, false, false, false];
+    // 열쇠 진행 상태 업데이트
+    function updateKeys(currentMission) {
+        for (let i = 1; i <= 9; i++) {
+            const el = document.getElementById('key-' + i);
+            if (!el) continue;
 
-    // 아이템 정보 (설명)
-    const itemInfo = {
-        1: {
-            name: '메밀',
-            desc: '성읍 들판을 하얗게 물들였던 곡식이에요. 첫 번째 방을 탈출하며, 성읍의 옛 농경 문화를 이해한 기념 아이템입니다.'
-        },
-        2: {
-            name: '한라봉',
-            desc: '제주를 대표하는 감귤로, 따뜻한 기후와 농부들의 노력이 만든 결과예요. 두 번째 방에서 옛 행정구역을 알아낸 보상입니다.'
-        },
-        3: {
-            name: '밭담',
-            desc: '돌을 차곡차곡 쌓아 바람과 흙을 지키던 제주식 돌담이에요. 세 번째 방에서 마을과 배움을 지키던 공간을 찾은 보상입니다.'
-        },
-        4: {
-            name: '돌하르방',
-            desc: '성문 앞을 지키던 돌 수호자예요. 네 번째 방에서 성읍의 수호자를 정확히 알아본 탐정에게 주어지는 아이템입니다.'
-        },
-        5: {
-            name: '해녀',
-            desc: '숨을 참고 바다에 들어가 물질을 하던 제주 여성의 상징이에요. 다섯 번째 방에서 외적과 맞선 제주 사람들의 삶을 떠올리게 하는 아이템입니다.'
-        },
-        6: {
-            name: '물허벅',
-            desc: '물을 길어 올 때 사용하던 독특한 모양의 항아리예요. 여섯 번째 방에서 제주 사람들의 생활 도구를 찾아낸 보상입니다.'
-        },
-        7: {
-            name: '초가지붕',
-            desc: '볏짚으로 엮어 비와 바람을 막아 주던 전통 지붕이에요. 일곱 번째 방에서 제주 집의 모습을 정확히 찾은 탐정에게 주어집니다.'
-        },
-        8: {
-            name: '오름',
-            desc: '한라산 주변에 솟아 있는 작은 화산체로, 제주 풍경을 특별하게 만드는 존재예요. 여덟 번째 방에서 방향 감각을 발휘해 입구를 맞힌 보상입니다.'
-        },
-        9: {
-            name: '바람',
-            desc: '제주를 늘 스쳐 가는 강한 바람이에요. 마지막 방까지 모두 클리어한 탐정만이 얻을 수 있는, 성읍을 끝까지 읽어 낸 증거 아이템입니다.'
+            el.classList.remove('active', 'unlocked', 'locked');
+
+            if (i < currentMission) {
+                el.textContent = '🗝';
+                el.classList.add('unlocked');
+            } else if (i === currentMission) {
+                el.textContent = '🔑';
+                el.classList.add('active');
+            } else {
+                el.textContent = '🔒';
+                el.classList.add('locked');
+            }
         }
-    };
+    }
 
     // 이름 입력 후 시작
     function saveNameAndStart() {
@@ -735,20 +761,20 @@
         document.getElementById('screen-name').classList.add('hidden');
         document.getElementById('screen-start').classList.remove('hidden');
 
-        // 아이템 바 보이기 및 초기화
-        document.getElementById('item-bar').classList.remove('hidden');
-        updateItemBar();
+        // Room 1부터 도전 예정 표시
+        updateKeys(1);
     }
 
     function goToMission(n) {
         document.getElementById('screen-start').classList.add('hidden');
         document.getElementById('screen-' + n).classList.remove('hidden');
+        updateKeys(n);
     }
 
     // 정답 확인 공통
     function checkAnswer(missionNumber, correctAnswers) {
         const inputEl = document.getElementById('answer-' + missionNumber);
-        let userInput = inputEl.value.trim();
+        let userInput = (inputEl.value || '').trim();
         userInput = userInput.replace(/\s+/g, ''); // 공백 제거
 
         let isCorrect = false;
@@ -761,76 +787,19 @@
         }
 
         if (isCorrect) {
-            // 아이템 지급 + 알림
-            giveItemForMission(missionNumber);
-
-            // 현재 Room 숨기고 다음으로
             document.getElementById('screen-' + missionNumber).classList.add('hidden');
 
             if (missionNumber === 9) {
+                // 마지막 방 → 사진 미션
+                updateKeys(9);
                 document.getElementById('screen-photo').classList.remove('hidden');
             } else {
-                document.getElementById('screen-' + (missionNumber + 1)).classList.remove('hidden');
+                const next = missionNumber + 1;
+                updateKeys(next);
+                document.getElementById('screen-' + next).classList.remove('hidden');
             }
         } else {
-            alert('틀렸습니다. 🕵️‍♂️\n주변 안내판과 단서를 다시 한 번 살펴보세요!');
-        }
-    }
-
-    // 미션 번호 -> 아이템 번호는 1:1 매핑
-    function giveItemForMission(missionNumber) {
-        const itemNo = missionNumber; // 1~9 그대로 사용
-        const info = itemInfo[itemNo];
-
-        if (!items[itemNo]) {
-            items[itemNo] = true;
-            updateItemBar();
-            alert(
-                '정답입니다! 👏\n\n' +
-                '새로운 제주 아이템을 획득했습니다.\n' +
-                '▶ 아이템: ' + info.name + '\n' +
-                '▶ 설명: ' + info.desc
-            );
-        } else {
-            alert('정답입니다! 👏 이미 이 방의 아이템은 획득했습니다.');
-        }
-    }
-
-    // 아이템 바 업데이트
-    function updateItemBar() {
-        let count = 0;
-        for (let i = 1; i <= 9; i++) {
-            const chip = document.getElementById('item-' + i);
-            if (!chip) continue;
-
-            if (items[i]) {
-                chip.classList.remove('locked');
-                chip.classList.add('unlocked');
-                count++;
-            } else {
-                chip.classList.remove('unlocked');
-                chip.classList.add('locked');
-            }
-        }
-        const textEl = document.getElementById('item-count-text');
-        if (textEl) {
-            textEl.textContent = count + ' / 9 획득';
-        }
-    }
-
-    // 아이템 칩 클릭 시 설명 팝업
-    function showItemInfo(itemNo) {
-        const info = itemInfo[itemNo];
-        if (!info) return;
-
-        if (!items[itemNo]) {
-            alert('아직 획득하지 않은 아이템입니다.\n해당 방의 미션을 먼저 해결해 보세요!');
-        } else {
-            alert(
-                '제주 아이템 정보\n\n' +
-                '▶ 이름: ' + info.name + '\n' +
-                '▶ 설명: ' + info.desc
-            );
+            alert('틀렸습니다. 🕵️‍♂️\n성읍민속마을 현장에서 안내판과 주변을 다시 한 번 살펴보세요!');
         }
     }
 
@@ -857,7 +826,7 @@
 
         const endTitle = document.getElementById('end-title');
         const endName = document.getElementById('end-name');
-        endTitle.textContent = playerName + ' 님, 모든 방을 탈출하고 제주 아이템을 완전히 모았습니다!';
+        endTitle.textContent = playerName + ' 님, 모든 잠금장치를 해제했습니다.';
         endName.textContent = playerName;
     }
 </script>
