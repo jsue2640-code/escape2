@@ -8,7 +8,6 @@
         /* ====== 전체 배경 & 기본 글꼴 ====== */
         body {
             font-family: 'Malgun Gothic', '맑은 고딕', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            /* JS에서 동적으로 background를 바꿀 것이므로, 여기서는 기본색만 지정 */
             background: #000000;
             margin: 0;
             padding: 16px;
@@ -17,10 +16,10 @@
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
-            transition: background 0.5s ease; /* 배경 전환도 부드럽게 */
+            transition: background 0.5s ease;
         }
 
-        /* ====== 중앙 카드 (모바일 앱 느낌) ====== */
+        /* ====== 중앙 카드 ====== */
         .container {
             background: #020617;
             width: 100%;
@@ -191,7 +190,7 @@
             color: #f9fafb;
         }
 
-        /* ====== 방탈출 느낌의 미션 카드 ====== */
+        /* ====== 미션 카드 ====== */
         .mission-panel {
             background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 1));
             border-radius: 16px;
@@ -406,7 +405,7 @@
     <!-- 스크롤 영역 -->
     <div class="main-scroll">
 
-        <!-- 이름 입력 화면 -->
+        <!-- 이름/반·번호 입력 화면 -->
         <div id="screen-name" class="screen-block active">
             <div class="upper-label">ENTRY LOG</div>
             <h2>성읍 시간탐험단 등록</h2>
@@ -429,12 +428,17 @@
                 <p class="mission-warning">
                     🩸 규칙: 모든 정답은 <strong>성읍민속마을 현장</strong>에 있습니다. 검색·추측 금지.
                 </p>
+
                 <p class="small" style="margin-bottom:6px;">
                     ※ 수학여행/현장체험 중에만 사용하세요. 마을을 충분히 둘러보는 것이 가장 중요합니다.
                 </p>
 
-                <label class="small" style="display:block;margin-bottom:4px;">탐험단원 이름</label>
+                <label class="small" style="display:block;margin-bottom:4px;">반 / 번호</label>
+                <input type="text" id="player-class" placeholder="예: 2-3 / 15번">
+
+                <label class="small" style="display:block;margin:6px 0 4px;">이름</label>
                 <input type="text" id="player-name" placeholder="실제 이름을 입력하세요">
+
                 <p class="small">
                     ※ 마지막 탈출 기록에 그대로 표시됩니다.
                 </p>
@@ -519,9 +523,6 @@
             <p class="mission-warning">
               🩸 안내도와 설명판에서 ‘○○현’으로 끝나는 지명을 찾아보세요.
             </p>
-            <p class="hint">
-              힌트) ‘정의’라는 글자를 눈여겨보세요.
-            </p>
 
             <input type="text" id="answer-2" placeholder="예: ○○현">
             <button onclick="checkAnswer(2, ['정의현'])">두 번째 잠금 해제</button>
@@ -544,9 +545,6 @@
             </p>
             <p class="mission-warning">
               🩸 ‘○○○교’로 끝나는 이름을 안내판에서 직접 확인해 적어 보세요.
-            </p>
-            <p class="hint">
-              힌트) 정의(定義)라는 이름이 다시 등장합니다.
             </p>
 
             <input type="text" id="answer-3" placeholder="예: ○○○교">
@@ -616,7 +614,7 @@
               이 작은 창고의 이름이 여섯 번째 암호입니다.
             </p>
             <p class="hint">
-              힌트) “오래 걸었더니, 배고팡.” 이라는 말장난을 떠올려 보세요.
+              힌트) “오래 걸렸더니, 배고팡.” 이라는 말장난을 떠올려 보세요.
             </p>
 
             <input type="text" id="answer-6" placeholder="정답을 입력하세요">
@@ -737,14 +735,15 @@
 
                 <div class="code-box">
                     ▶ Game: 성읍 방탈출 미션<br>
+                    ▶ Class: <span id="end-class" class="highlight"></span><br>
                     ▶ Player: <span id="end-name" class="highlight"></span><br>
                     ▶ Status: ALL 9 LOCKS RELEASED<br>
-                    ▶ Evidence: 팽나무 아래의 사진
+                    ▶ Evidence: <span id="evidence-text" class="highlight"></span>
                 </div>
 
                 <p class="small" style="margin-top:10px;">
                     이 화면을 <strong>캡처</strong>해서 선생님께 제출하세요.<br>
-                    (이름과 “ALL 9 LOCKS RELEASED” 문구가 보이도록 찍어 주세요.)
+                    (반·번호, 이름, Evidence 문구가 보이도록 찍어 주세요.)
                 </p>
             </div>
         </div>
@@ -755,16 +754,17 @@
 
 <script>
     let playerName = '';
+    let playerClass = '';
 
-    // 기본 배경(gradient) 문자열
+    // 기본 배경(gradient)
     const BASE_BG = 'radial-gradient(circle at top, #020617 0, #000000 55%, #020617 100%)';
 
     // Room별 배경 이미지 설정 (선택 사항)
     // url("이미지주소") 형태로 채워 넣으면 해당 화면에서 자동 적용됩니다.
     const roomBackgrounds = {
-        'screen-name': '',            // 예: 'url("https://.../intro.jpg")'
+        'screen-name': '',
         'screen-start': '',
-        'screen-1': '',               // 예: 탐라순력도 느낌 배경
+        'screen-1': '',
         'screen-2': '',
         'screen-3': '',
         'screen-4': '',
@@ -820,9 +820,8 @@
             if (!el) return;
             if (id === screenId) {
                 el.classList.remove('hidden');
-                // 다시 트리거하기 위해 클래스 리셋
                 el.classList.remove('active');
-                void el.offsetWidth; // reflow 강제
+                void el.offsetWidth; // reflow
                 el.classList.add('active');
             } else {
                 el.classList.add('hidden');
@@ -833,16 +832,21 @@
         setBackground(screenId);
     }
 
-    // 이름 입력 후 시작
+    // 이름/반·번호 입력 후 시작
     function saveNameAndStart() {
         const nameInput = document.getElementById('player-name').value.trim();
+        const classInput = document.getElementById('player-class').value.trim();
+
         if (!nameInput) {
             alert('실제 이름을 입력해 주세요.');
             return;
         }
+
         playerName = nameInput;
+        playerClass = classInput || '';
+
         showScreen('screen-start');
-        updateKeys(1); // Room 1 준비 상태로 표시
+        updateKeys(1); // Room 1 준비 상태
     }
 
     function goToMission(n) {
@@ -877,7 +881,7 @@
         } else {
             // 오답: 입력창 흔들기
             inputEl.classList.remove('shake');
-            void inputEl.offsetWidth; // reflow로 애니메이션 재적용
+            void inputEl.offsetWidth; // reflow
             inputEl.classList.add('shake');
             alert('틀렸습니다. 🕵️‍♂️\n성읍민속마을 현장에서 안내판과 주변을 다시 한 번 살펴보세요!');
         }
@@ -893,19 +897,37 @@
         img.style.display = 'block';
     }
 
-    // 게임 종료
+    // 게임 종료 (Evidence 문구 분기)
     function finishGame() {
         const fileInput = document.getElementById('photo-input');
-        if (!fileInput.files || fileInput.files.length === 0) {
-            const proceed = confirm('사진이 선택되지 않았습니다.\n그래도 게임을 끝내시겠습니까?');
+        const hasPhoto = fileInput.files && fileInput.files.length > 0;
+
+        if (!hasPhoto) {
+            const proceed = confirm(
+                '사진이 선택되지 않았습니다.\n' +
+                '사진 없이도 게임을 끝낼 수 있지만,\n' +
+                'Evidence에는 “사진 기록 없음”으로 기록됩니다.\n\n' +
+                '그래도 게임을 끝내시겠습니까?'
+            );
             if (!proceed) return;
         }
 
         showScreen('screen-end');
+
         const endTitle = document.getElementById('end-title');
         const endName = document.getElementById('end-name');
+        const endClass = document.getElementById('end-class');
+        const evidenceText = document.getElementById('evidence-text');
+
         endTitle.textContent = playerName + ' 님, 모든 잠금장치를 해제했습니다.';
         endName.textContent = playerName;
+        endClass.textContent = playerClass || '-';
+
+        if (hasPhoto) {
+            evidenceText.textContent = '팽나무 아래의 사진 (제출 완료)';
+        } else {
+            evidenceText.textContent = '사진 기록 없음 (팽나무 아래 사진 미제출)';
+        }
     }
 
     // 페이지 처음 로드 시 기본 배경 설정
